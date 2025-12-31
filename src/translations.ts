@@ -1,0 +1,128 @@
+export const translations = {
+    en: {
+        activating: 'Activating...',
+        detectingProcesses: 'Detecting processes...',
+        noProcessesDetected: '0 Processes detected.',
+        waitingForAntigravity: 'Waiting for Antigravity...',
+        noAccountsDetected: 'No accounts detected',
+        onlineNoModels: 'Online (No Models)',
+        quotaDetails: 'View quota details',
+        scanningWait: 'Scanning... please wait.',
+        currentSessionQuotas: 'Current Session Quotas - Click to pin to status bar',
+        accountsLinked: 'Linked Accounts',
+        monthlyCredits: 'Monthly Credits',
+        models: 'Models',
+        current: 'Current'
+    },
+    es: {
+        activating: 'Activando...',
+        detectingProcesses: 'Detectando procesos...',
+        noProcessesDetected: '0 Procesos detectados.',
+        waitingForAntigravity: 'Esperando Antigravity...',
+        noAccountsDetected: 'No hay cuentas detectadas',
+        onlineNoModels: 'En línea (Sin Modelos)',
+        quotaDetails: 'Ver detalles de cuota',
+        scanningWait: 'Escaneando... espera un momento.',
+        currentSessionQuotas: 'Estado de Cuotas (Sesión Actual) - Haz clic para fijar en barra inferior',
+        accountsLinked: 'Cuentas Vinculadas',
+        monthlyCredits: 'Créditos Mensuales',
+        models: 'Modelos',
+        current: 'Actual'
+    },
+    ru: {
+        activating: 'Активация...',
+        detectingProcesses: 'Обнаружение процессов...',
+        noProcessesDetected: '0 Процессов обнаружено.',
+        waitingForAntigravity: 'Ожидание Antigravity...',
+        noAccountsDetected: 'Аккаунты не обнаружены',
+        onlineNoModels: 'Онлайн (Нет моделей)',
+        quotaDetails: 'Просмотр деталей квоты',
+        scanningWait: 'Сканирование... подождите.',
+        currentSessionQuotas: 'Квоты текущей сессии - Нажмите, чтобы закрепить в строке состояния',
+        accountsLinked: 'Связанные аккаунты',
+        monthlyCredits: 'Месячные кредиты',
+        models: 'Модели',
+        current: 'Текущий'
+    },
+    zh: {
+        activating: '激活中...',
+        detectingProcesses: '检测进程中...',
+        noProcessesDetected: '检测到 0 个进程。',
+        waitingForAntigravity: '等待 Antigravity...',
+        noAccountsDetected: '未检测到账户',
+        onlineNoModels: '在线（无模型）',
+        quotaDetails: '查看配额详情',
+        scanningWait: '扫描中... 请稍候。',
+        currentSessionQuotas: '当前会话配额 - 点击固定到状态栏',
+        accountsLinked: '关联账户',
+        monthlyCredits: '月度积分',
+        models: '模型',
+        current: '当前'
+    },
+    ko: {
+        activating: '활성화 중...',
+        detectingProcesses: '프로세스 감지 중...',
+        noProcessesDetected: '감지된 프로세스 0개.',
+        waitingForAntigravity: 'Antigravity 대기 중...',
+        noAccountsDetected: '감지된 계정이 없음',
+        onlineNoModels: '온라인 (모델 없음)',
+        quotaDetails: '할당량 세부정보 보기',
+        scanningWait: '스캔 중... 잠시 기다려 주세요.',
+        currentSessionQuotas: '현재 세션 할당량 - 클릭하여 상태 표시줄에 고정',
+        accountsLinked: '연결된 계정',
+        monthlyCredits: '월간 크레딧',
+        models: '모델',
+        current: '현재'
+    },
+    ja: {
+        activating: 'アクティブ化中...',
+        detectingProcesses: 'プロセス検出中...',
+        noProcessesDetected: '検出されたプロセス 0 個。',
+        waitingForAntigravity: 'Antigravity 待機中...',
+        noAccountsDetected: 'アカウントが検出されません',
+        onlineNoModels: 'オンライン（モデルなし）',
+        quotaDetails: 'クォータの詳細を表示',
+        scanningWait: 'スキャン中... お待ちください。',
+        currentSessionQuotas: '現在のセッションクォータ - クリックしてステータスバーに固定',
+        accountsLinked: 'リンクされたアカウント',
+        monthlyCredits: '月間クレジット',
+        models: 'モデル',
+        current: '現在'
+    },
+    fr: {
+        activating: 'Activation...',
+        detectingProcesses: 'Détection des processus...',
+        noProcessesDetected: '0 Processus détectés.',
+        waitingForAntigravity: 'En attente d\'Antigravity...',
+        noAccountsDetected: 'Aucun compte détecté',
+        onlineNoModels: 'En ligne (Aucun modèle)',
+        quotaDetails: 'Voir les détails du quota',
+        scanningWait: 'Scan en cours... veuillez patienter.',
+        currentSessionQuotas: 'Quotas de la session actuelle - Cliquez pour épingler à la barre d\'état',
+        accountsLinked: 'Comptes liés',
+        monthlyCredits: 'Crédits mensuels',
+        models: 'Modèles',
+        current: 'Actuel'
+    },
+    de: {
+        activating: 'Aktivierung...',
+        detectingProcesses: 'Prozesse erkennen...',
+        noProcessesDetected: '0 Prozesse erkannt.',
+        waitingForAntigravity: 'Warten auf Antigravity...',
+        noAccountsDetected: 'Keine Konten erkannt',
+        onlineNoModels: 'Online (Keine Modelle)',
+        quotaDetails: 'Kontingentdetails anzeigen',
+        scanningWait: 'Scannen... bitte warten.',
+        currentSessionQuotas: 'Aktuelle Sitzungskontingente - Klicken, um an Statusleiste anzuheften',
+        accountsLinked: 'Verknüpfte Konten',
+        monthlyCredits: 'Monatliche Credits',
+        models: 'Modelle',
+        current: 'Aktuell'
+    }
+};
+
+export function getTranslation(key: string, language: string = 'auto'): string {
+    const lang = language === 'auto' ? (process.env.VSCODE_NLS_CONFIG ? JSON.parse(process.env.VSCODE_NLS_CONFIG).locale : 'en') : language;
+    const messages = translations[lang as keyof typeof translations] || translations.en;
+    return messages[key as keyof typeof messages] || key;
+}

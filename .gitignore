@@ -1,0 +1,9 @@
+node_modules/
+out/
+*.log
+.DS_Store
+.vscode/settings.json
+process_dump.*
+debug_*
+snippet_*
+*.vsix

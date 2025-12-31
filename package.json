@@ -1,0 +1,114 @@
+{
+  "name": "antigravity-omni-quota",
+  "displayName": "Antigravity Omni-Quota",
+  "description": "A VS Code extension for managing Omni Quota accounts",
+  "version": "0.0.1",
+  "publisher": "antigravity-dev",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "onView:quotaExplorer"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "antigravity-quota.focus",
+        "title": "Show Quota Panel"
+      },
+      {
+        "command": "antigravity-quota.refresh",
+        "title": "Refresh Quota"
+      },
+      {
+        "command": "antigravity-quota.redetect",
+        "title": "Re-detect Port"
+      }
+    ],
+    "configuration": {
+      "title": "Antigravity Omni-Quota",
+      "properties": {
+        "antigravity-quota.enableMonitoring": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether to enable quota monitoring"
+        },
+        "antigravity-quota.pollingInterval": {
+          "type": "number",
+          "default": 30,
+          "minimum": 10,
+          "maximum": 300,
+          "description": "Quota data refresh frequency in seconds"
+        },
+        "antigravity-quota.warningThreshold": {
+          "type": "number",
+          "default": 50,
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Warning threshold percentage"
+        },
+        "antigravity-quota.criticalThreshold": {
+          "type": "number",
+          "default": 30,
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Critical threshold percentage"
+        },
+        "antigravity-quota.statusBarStyle": {
+          "type": "string",
+          "enum": ["dots", "percentage"],
+          "default": "dots",
+          "description": "Status bar display style"
+        },
+        "antigravity-quota.showGeminiPro": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show Gemini Pro quota"
+        },
+        "antigravity-quota.showGeminiFlash": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show Gemini Flash quota"
+        },
+        "antigravity-quota.language": {
+          "type": "string",
+          "enum": ["auto", "en", "es", "ru", "zh", "ko", "ja", "fr", "de"],
+          "default": "auto",
+          "description": "Language setting (auto detects VS Code locale)"
+        }
+      }
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "quota-explorer-container",
+          "title": "Omni Quota",
+          "icon": "media/quota-icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "quota-explorer-container": [
+        {
+          "id": "quotaExplorer",
+          "name": "Linked Accounts"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "compile": "tsc -b",
+    "watch": "tsc -b -w"
+  },
+  "devDependencies": {
+    "@types/node": "16.x",
+    "@types/vscode": "^1.75.0",
+    "axios": "^1.13.2",
+    "typescript": "^4.9.5"
+  }
+}
