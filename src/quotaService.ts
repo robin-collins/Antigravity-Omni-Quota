@@ -165,6 +165,23 @@ export class QuotaService {
     public async fetchStatus(server: ServerInfo): Promise<any> {
         const authToken = this.getAuthTokenFromDisk();
 
+        // Initialize LSP client
+        const initUrl = `https://127.0.0.1:${server.port}/exa.language_server_pb.LanguageServerService/Initialize`;
+        const initPayload = {
+            processId: null,
+            clientInfo: {
+                name: 'Visual Studio Code',
+                version: '1.75.0'
+            },
+            rootUri: null,
+            capabilities: {}
+        };
+        try {
+            await this.doPost(initUrl, initPayload, server);
+        } catch (e) {
+            console.warn('[Omni-Quota] LSP Initialize failed:', (e as any).message);
+        }
+
         // Ensure client is initialized by calling GetUnleashData
         const unleashUrl = `https://127.0.0.1:${server.port}/exa.language_server_pb.LanguageServerService/GetUnleashData`;
         const unleashPayload = {
