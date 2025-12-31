@@ -134,6 +134,7 @@ async function runCheck(
             try {
                 // Fetch
                 const status = await service.fetchStatus(conn);
+                console.log('Status data for PID', conn.pid, ':', status);
 
                 let quota = { total: 0, remaining: 0, used: 0 };
                 let models: any[] = [];

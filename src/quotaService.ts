@@ -119,7 +119,11 @@ export class QuotaService {
                 ide_name: 'visual_studio_code',
                 ide_version: '1.75.0',
                 session_id: '00000000-0000-0000-0000-000000000000'
-            }
+            },
+            returnPropertyQuota: true,
+            return_property_quota: true,
+            include_usage_metadata: true,
+            check_quota: true
         };
 
         const agent = new https.Agent({ rejectUnauthorized: false, keepAlive: true });
@@ -161,38 +165,10 @@ export class QuotaService {
         return null;
     }
 
-    // 2. COMPLEX: Quota Check (GetUserStatus)
+    // 2. COMPLEX: Quota Check (GetUserStatus) - Using cached data from probe
     public async fetchStatus(server: ServerInfo): Promise<any> {
-        const authToken = this.getAuthTokenFromDisk();
-        console.log('[Omni-Quota] Auth token present:', !!authToken, 'Token length:', authToken ? authToken.length : 0);
-        const sessionId = 'vscode-omni-quota-session';
-
-        // Ensure client is initialized by calling GetUnleashData
-        const unleashUrl = `https://127.0.0.1:${server.port}/exa.language_server_pb.LanguageServerService/GetUnleashData`;
-        const unleashPayload = {
-            metadata: {
-                api_key: authToken || '00000000-0000-0000-0000-000000000000',
-                extension_name: 'vscode',
-                extension_version: '1.2.3',
-                ide_name: 'visual_studio_code',
-                ide_version: '1.75.0',
-                session_id: sessionId
-            }
-        };
-        await this.doPost(unleashUrl, unleashPayload, server);
-
-        const url = `https://127.0.0.1:${server.port}/exa.language_server_pb.LanguageServerService/CommandModelConfig`;
-        const payload = {
-            metadata: {
-                api_key: authToken || '00000000-0000-0000-0000-000000000000',
-                extension_name: 'vscode',
-                extension_version: '1.2.3',
-                ide_name: 'visual_studio_code',
-                ide_version: '1.75.0',
-                session_id: sessionId
-            }
-        };
-        return this.doPost(url, payload, server);
+        console.log('[Omni-Quota] Using cached data from probe');
+        return server.initialData;
     }
 
     // Reuse existing fetch logic for heavy calls if needed
