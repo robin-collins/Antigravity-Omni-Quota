@@ -181,7 +181,7 @@ export class QuotaService {
         };
         await this.doPost(unleashUrl, unleashPayload, server);
 
-        const url = `https://127.0.0.1:${server.port}/exa.language_server_pb.LanguageServerService/GetUserStatus`;
+        const url = `https://127.0.0.1:${server.port}/exa.language_server_pb.LanguageServerService/CommandModelConfig`;
         const payload = {
             metadata: {
                 api_key: authToken || '00000000-0000-0000-0000-000000000000',
@@ -190,11 +190,7 @@ export class QuotaService {
                 ide_name: 'visual_studio_code',
                 ide_version: '1.75.0',
                 session_id: sessionId
-            },
-            returnPropertyQuota: true,
-            return_property_quota: true,
-            include_usage_metadata: true,
-            check_quota: true
+            }
         };
         return this.doPost(url, payload, server);
     }
