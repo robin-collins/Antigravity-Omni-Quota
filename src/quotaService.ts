@@ -164,7 +164,8 @@ export class QuotaService {
     // 2. COMPLEX: Quota Check (GetUserStatus)
     public async fetchStatus(server: ServerInfo): Promise<any> {
         const authToken = this.getAuthTokenFromDisk();
-        const sessionId = require('crypto').randomUUID();
+        console.log('[Omni-Quota] Auth token present:', !!authToken, 'Token length:', authToken ? authToken.length : 0);
+        const sessionId = 'vscode-omni-quota-session';
 
         // Ensure client is initialized by calling GetUnleashData
         const unleashUrl = `https://127.0.0.1:${server.port}/exa.language_server_pb.LanguageServerService/GetUnleashData`;
