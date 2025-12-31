@@ -163,14 +163,14 @@ export class QuotaService {
 
     // 2. COMPLEX: Quota Check (GetUserStatus)
     public async fetchStatus(server: ServerInfo): Promise<any> {
-        const authToken = this.getAuthTokenFromDisk();
+        const csrfToken = server.csrfToken;
         const sessionId = 'vscode-omni-quota-session';
 
         // Ensure client is initialized by calling GetUnleashData
         const unleashUrl = `https://127.0.0.1:${server.port}/exa.language_server_pb.LanguageServerService/GetUnleashData`;
         const unleashPayload = {
             metadata: {
-                api_key: authToken || '00000000-0000-0000-0000-000000000000',
+                api_key: '00000000-0000-0000-0000-000000000000',
                 extension_name: 'vscode',
                 extension_version: '1.2.3',
                 ide_name: 'visual_studio_code',
@@ -189,7 +189,33 @@ export class QuotaService {
                 locale: 'en'
             }
         };
-        return this.doPost(url, payload, server);
+        
+        // Use csrfToken for auth
+        const agent = new https.Agent({ rejectUnauthorized: false, keepAlive: true });
+        const headers: any = {
+            'Content-Type': 'application/json',
+            'x-codeium-csrf-token': csrfToken,
+            'Authorization': `Basic ${csrfToken}`,
+            'Connection': 'close'
+        };
+
+        const config = {
+            headers: headers,
+            httpsAgent: agent,
+            timeout: 3000
+        };
+
+        try {
+            const res = await axios.post(url, payload, config);
+            return res.data;
+        } catch (e: any) {
+            if (e.code === 'EPROTO' || e.response?.status === 403) {
+                const httpUrl = url.replace('https://', 'http://');
+                const res2 = await axios.post(httpUrl, payload, { ...config, httpsAgent: undefined });
+                return res2.data;
+            }
+            throw e;
+        }
     }
 
     // Reuse existing fetch logic for heavy calls if needed
