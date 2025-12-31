@@ -164,23 +164,7 @@ export class QuotaService {
     // 2. COMPLEX: Quota Check (GetUserStatus)
     public async fetchStatus(server: ServerInfo): Promise<any> {
         const authToken = this.getAuthTokenFromDisk();
-
-        // Initialize LSP client
-        const initUrl = `https://127.0.0.1:${server.port}/exa.language_server_pb.LanguageServerService/Initialize`;
-        const initPayload = {
-            processId: null,
-            clientInfo: {
-                name: 'Visual Studio Code',
-                version: '1.75.0'
-            },
-            rootUri: null,
-            capabilities: {}
-        };
-        try {
-            await this.doPost(initUrl, initPayload, server);
-        } catch (e) {
-            console.warn('[Omni-Quota] LSP Initialize failed:', (e as any).message);
-        }
+        const sessionId = require('crypto').randomUUID();
 
         // Ensure client is initialized by calling GetUnleashData
         const unleashUrl = `https://127.0.0.1:${server.port}/exa.language_server_pb.LanguageServerService/GetUnleashData`;
@@ -191,7 +175,7 @@ export class QuotaService {
                 extension_version: '1.2.3',
                 ide_name: 'visual_studio_code',
                 ide_version: '1.75.0',
-                session_id: '00000000-0000-0000-0000-000000000000'
+                session_id: sessionId
             }
         };
         await this.doPost(unleashUrl, unleashPayload, server);
@@ -204,7 +188,7 @@ export class QuotaService {
                 extension_version: '1.2.3',
                 ide_name: 'visual_studio_code',
                 ide_version: '1.75.0',
-                session_id: '00000000-0000-0000-0000-000000000000'
+                session_id: sessionId
             },
             returnPropertyQuota: true,
             return_property_quota: true,
