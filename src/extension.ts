@@ -147,11 +147,8 @@ export async function activate(context: vscode.ExtensionContext) {
                     await config.update('language', langSelected.value, vscode.ConfigurationTarget.Global);
                     // Refresh tree view to apply translations
                     quotaProvider.refresh(null, true);
-                    // Refresh status bar
-                    const lastCalculatedData = context.workspaceState.get('lastData', null);
-                    if (lastCalculatedData) {
-                        updateStatusBar(statusBarItem, lastCalculatedData, context);
-                    }
+                    // Force refresh to update translations in status bar and quick menu
+                    runCheck(quotaService, quotaProvider, accountManager, statusBarItem, treeView, context);
                     vscode.window.showInformationMessage(getTranslation('languageChanged', langSelected.value).replace('{lang}', langSelected.label));
                 }
             }
