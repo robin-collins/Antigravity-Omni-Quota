@@ -84,6 +84,12 @@ export async function activate(context: vscode.ExtensionContext) {
         }),
         vscode.commands.registerCommand('antigravity-quota.focus', () => {
             vscode.commands.executeCommand('workbench.view.extension.quotaExplorer');
+        }),
+        vscode.commands.registerCommand('antigravity-quota.clearAccounts', async () => {
+            console.log('[Omni-Quota] Clear accounts command executed');
+            await accountManager.reset();
+            quotaProvider.refresh(null, false);
+            vscode.window.showInformationMessage('Todas las cuentas eliminadas.');
         })
     );
 
@@ -164,18 +170,25 @@ async function runCheck(
                                 let resetStr = "Unknown";
                                 let resetMinutes = 0;
                                 if (cfg.quotaInfo?.resetTime) {
-                                    try {
-                                        const reset = new Date(cfg.quotaInfo.resetTime);
-                                        resetMinutes = Math.floor((reset.getTime() - now) / 60000);
-                                        if (resetMinutes > 0) {
-                                            const h = Math.floor(resetMinutes / 60);
-                                            const m = resetMinutes % 60;
-                                            resetStr = `en ${h}h ${m}m`;
-                                        } else {
-                                            resetStr = "Listo";
-                                            resetMinutes = 0;
+                                    if (typeof cfg.quotaInfo.resetTime === 'string' && !cfg.quotaInfo.resetTime.includes('en') && !cfg.quotaInfo.resetTime.includes('Listo')) {
+                                        // If it's a pre-formatted string, use it
+                                        resetStr = cfg.quotaInfo.resetTime;
+                                    } else {
+                                        try {
+                                            const reset = new Date(cfg.quotaInfo.resetTime);
+                                            resetMinutes = Math.floor((reset.getTime() - now) / 60000);
+                                            if (resetMinutes > 0) {
+                                                const h = Math.floor(resetMinutes / 60);
+                                                const m = resetMinutes % 60;
+                                                resetStr = `en ${h}h ${m}m`;
+                                            } else {
+                                                resetStr = "Listo";
+                                                resetMinutes = 0;
+                                            }
+                                        } catch(e) {
+                                            resetStr = cfg.quotaInfo.resetTime.toString();
                                         }
-                                    } catch(e) {}
+                                    }
                                 }
 
                                 return {
