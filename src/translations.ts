@@ -12,7 +12,16 @@ export const translations = {
         accountsLinked: 'Linked Accounts',
         monthlyCredits: 'Monthly Credits',
         models: 'Models',
-        current: 'Current'
+        current: 'Current',
+        settings: 'Settings',
+        selectLanguage: 'Select Language',
+        languageChanged: 'Language changed to {lang}',
+        noAccountsToRemove: 'No accounts to remove.',
+        selectAccountToRemove: 'Select account to remove',
+        accountRemoved: 'Account "{name}" removed.',
+        allAccountsCleared: 'All accounts cleared.',
+        accountLimitReached: 'Account limit of 10 reached. Remove an account to add another.',
+        noModelInfo: 'No model information'
     },
     es: {
         activating: 'Activando...',
@@ -27,7 +36,16 @@ export const translations = {
         accountsLinked: 'Cuentas Vinculadas',
         monthlyCredits: 'Créditos Mensuales',
         models: 'Modelos',
-        current: 'Actual'
+        current: 'Actual',
+        settings: 'Configuración',
+        selectLanguage: 'Seleccionar Idioma',
+        languageChanged: 'Idioma cambiado a {lang}',
+        noAccountsToRemove: 'No hay cuentas para eliminar.',
+        selectAccountToRemove: 'Seleccionar cuenta a eliminar',
+        accountRemoved: 'Cuenta "{name}" eliminada.',
+        allAccountsCleared: 'Todas las cuentas eliminadas.',
+        accountLimitReached: 'Límite de 10 cuentas alcanzado. Elimina una cuenta para añadir otra.',
+        noModelInfo: 'Sin información de modelos'
     },
     ru: {
         activating: 'Активация...',
@@ -42,7 +60,16 @@ export const translations = {
         accountsLinked: 'Связанные аккаунты',
         monthlyCredits: 'Месячные кредиты',
         models: 'Модели',
-        current: 'Текущий'
+        current: 'Текущий',
+        settings: 'Настройки',
+        selectLanguage: 'Выбрать язык',
+        languageChanged: 'Язык изменен на {lang}',
+        noAccountsToRemove: 'Нет аккаунтов для удаления.',
+        selectAccountToRemove: 'Выбрать аккаунт для удаления',
+        accountRemoved: 'Аккаунт "{name}" удален.',
+        allAccountsCleared: 'Все аккаунты очищены.',
+        accountLimitReached: 'Лимит аккаунтов 10 достигнут. Удалите аккаунт, чтобы добавить другой.',
+        noModelInfo: 'Нет информации о моделях'
     },
     zh: {
         activating: '激活中...',

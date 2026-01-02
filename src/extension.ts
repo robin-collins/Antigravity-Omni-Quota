@@ -89,12 +89,14 @@ export async function activate(context: vscode.ExtensionContext) {
             console.log('[Omni-Quota] Clear accounts command executed');
             await accountManager.reset();
             quotaProvider.refresh(null, false);
-            vscode.window.showInformationMessage('All accounts cleared.');
+            vscode.window.showInformationMessage(getTranslation('allAccountsCleared', language));
         }),
         vscode.commands.registerCommand('antigravity-quota.removeAccount', async () => {
+            const config = vscode.workspace.getConfiguration('antigravity-quota');
+            const language = config.get('language', 'auto') as string;
             const accounts = accountManager.getAccounts();
             if (accounts.length === 0) {
-                vscode.window.showInformationMessage('No accounts to remove.');
+                vscode.window.showInformationMessage(getTranslation('noAccountsToRemove', language));
                 return;
             }
             const items = accounts.map(acc => ({
@@ -103,12 +105,46 @@ export async function activate(context: vscode.ExtensionContext) {
                 account: acc
             }));
             const selected = await vscode.window.showQuickPick(items, {
-                placeHolder: 'Select account to remove'
+                placeHolder: getTranslation('selectAccountToRemove', language)
             });
             if (selected && selected.account) {
                 await accountManager.removeAccount(selected.account.id);
                 quotaProvider.refresh(null, false);
-                vscode.window.showInformationMessage(`Account "${selected.account.displayName}" removed.`);
+                vscode.window.showInformationMessage(getTranslation('accountRemoved', language).replace('{name}', selected.account.displayName));
+            }
+        }),
+        vscode.commands.registerCommand('antigravity-quota.settings', async () => {
+            const config = vscode.workspace.getConfiguration('antigravity-quota');
+            const currentLang = config.get('language', 'auto') as string;
+            const items = [
+                {
+                    label: 'Change Language',
+                    description: `Current: ${currentLang}`,
+                    action: 'language'
+                }
+            ];
+            const selected = await vscode.window.showQuickPick(items, {
+                placeHolder: 'Extension Settings'
+            });
+            if (selected?.action === 'language') {
+                const langItems = [
+                    { label: 'Auto (System)', value: 'auto' },
+                    { label: 'English', value: 'en' },
+                    { label: 'Español', value: 'es' },
+                    { label: 'Русский', value: 'ru' },
+                    { label: '中文', value: 'zh' },
+                    { label: '한국어', value: 'ko' },
+                    { label: '日本語', value: 'ja' },
+                    { label: 'Français', value: 'fr' },
+                    { label: 'Deutsch', value: 'de' }
+                ];
+                const langSelected = await vscode.window.showQuickPick(langItems, {
+                    placeHolder: 'Select Language'
+                });
+                if (langSelected) {
+                    await config.update('language', langSelected.value, vscode.ConfigurationTarget.Global);
+                    vscode.window.showInformationMessage(`Language changed to ${langSelected.label}`);
+                }
             }
         })
     );
@@ -239,7 +275,7 @@ async function runCheck(
                 });
                 if (!success) {
                     console.log(`[Omni-Quota] Skipped adding account ${userId} due to limit`);
-                    vscode.window.showWarningMessage(`Account limit of 10 reached. Remove an account to add another.`);
+                    vscode.window.showWarningMessage(getTranslation('accountLimitReached', language));
                     continue;
                 }
 
