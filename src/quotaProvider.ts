@@ -36,7 +36,7 @@ export class QuotaProvider implements vscode.TreeDataProvider<QuotaItem> {
                 const icon = isActive ? 'pass-filled' : 'account';
                 const credits = acc.quota.remaining.toLocaleString();
                 const modelsCount = acc.models?.length || 0;
-                const desc = `${modelsCount} models | ${credits} credits`;
+                const desc = `${modelsCount} models`;
                 return new QuotaItem(label, state, icon, acc, desc);
             }));
         }
