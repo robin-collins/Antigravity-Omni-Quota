@@ -145,6 +145,8 @@ export async function activate(context: vscode.ExtensionContext) {
                 if (langSelected) {
                     await config.update('language', langSelected.value, vscode.ConfigurationTarget.Global);
                     vscode.window.showInformationMessage(getTranslation('languageChanged', language).replace('{lang}', langSelected.label));
+                    // Reload window to apply language change
+                    await vscode.commands.executeCommand('workbench.action.reloadWindow');
                 }
             }
         })
