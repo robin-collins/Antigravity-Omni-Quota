@@ -69,11 +69,12 @@ export class QuotaProvider implements vscode.TreeDataProvider<QuotaItem> {
                 const config = vscode.workspace.getConfiguration('antigravity-quota');
                 const showOnlyLowQuota = config.get('showOnlyLowQuota', false) as boolean;
                 const warningThreshold = config.get('warningThreshold', 50) as number;
+                let modelsToShow = acc.models;
                 if (showOnlyLowQuota) {
-                    acc.models = acc.models.filter(m => m.percentage < warningThreshold);
+                    modelsToShow = modelsToShow.filter(m => m.percentage < warningThreshold);
                 }
                 // items.push(new QuotaItem("--- Modelos ---", vscode.TreeItemCollapsibleState.None));
-                acc.models.forEach(m => {
+                modelsToShow.forEach(m => {
                     const mName = m.name || getTranslation('model', lang);
                     const mPct = m.percentage ?? 0;
                     const config = vscode.workspace.getConfiguration('antigravity-quota');
