@@ -178,9 +178,14 @@ async function runCheck(
                                             const reset = new Date(cfg.quotaInfo.resetTime);
                                             resetMinutes = Math.floor((reset.getTime() - now) / 60000);
                                             if (resetMinutes > 0) {
-                                                const h = Math.floor(resetMinutes / 60);
+                                                const d = Math.floor(resetMinutes / 1440);
+                                                const h = Math.floor((resetMinutes % 1440) / 60);
                                                 const m = resetMinutes % 60;
-                                                resetStr = `en ${h}h ${m}m`;
+                                                if (d > 0) {
+                                                    resetStr = `en ${d}d ${h}h ${m}m`;
+                                                } else {
+                                                    resetStr = `en ${h}h ${m}m`;
+                                                }
                                             } else {
                                                 resetStr = "Listo";
                                                 resetMinutes = 0;

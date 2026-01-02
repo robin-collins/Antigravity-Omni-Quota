@@ -28,6 +28,10 @@
       {
         "command": "antigravity-quota.redetect",
         "title": "Re-detect Port"
+      },
+      {
+        "command": "antigravity-quota.clearAccounts",
+        "title": "Clear All Accounts"
       }
     ],
     "configuration": {

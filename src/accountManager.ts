@@ -55,23 +55,23 @@ export class AccountManager {
             toRemove.forEach(acc => this.cache.delete(acc.id));
         }
 
-        // await this.persist(); // DISABLED FOR MEMORY-ONLY MODE TO FIX HANG
+        await this.persist();
     }
 
     public async removeAccount(id: string) {
         if (this.cache.has(id)) {
             this.cache.delete(id);
-            // await this.persist();
+            await this.persist();
         }
     }
 
     public async reset(): Promise<void> {
         this.cache.clear();
-        // await this.globalState.update(AccountManager.STORAGE_KEY, undefined);
+        await this.globalState.update(AccountManager.STORAGE_KEY, undefined);
     }
 
     private async persist() {
-        // BYPASS STORAGE TO AVOID LOCKS
-        return;
+        const accounts = Array.from(this.cache.values());
+        await this.globalState.update(AccountManager.STORAGE_KEY, accounts);
     }
 }
