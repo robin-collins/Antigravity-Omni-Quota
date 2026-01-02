@@ -115,16 +115,17 @@ export async function activate(context: vscode.ExtensionContext) {
         }),
         vscode.commands.registerCommand('antigravity-quota.settings', async () => {
             const config = vscode.workspace.getConfiguration('antigravity-quota');
+            const language = config.get('language', 'auto') as string;
             const currentLang = config.get('language', 'auto') as string;
             const items = [
                 {
-                    label: 'Change Language',
+                    label: getTranslation('changeLanguage', language),
                     description: `Current: ${currentLang}`,
                     action: 'language'
                 }
             ];
             const selected = await vscode.window.showQuickPick(items, {
-                placeHolder: 'Extension Settings'
+                placeHolder: getTranslation('extensionSettings', language)
             });
             if (selected?.action === 'language') {
                 const langItems = [
@@ -139,11 +140,11 @@ export async function activate(context: vscode.ExtensionContext) {
                     { label: 'Deutsch', value: 'de' }
                 ];
                 const langSelected = await vscode.window.showQuickPick(langItems, {
-                    placeHolder: 'Select Language'
+                    placeHolder: getTranslation('selectLanguage', language)
                 });
                 if (langSelected) {
                     await config.update('language', langSelected.value, vscode.ConfigurationTarget.Global);
-                    vscode.window.showInformationMessage(`Language changed to ${langSelected.label}`);
+                    vscode.window.showInformationMessage(getTranslation('languageChanged', language).replace('{lang}', langSelected.label));
                 }
             }
         })

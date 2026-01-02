@@ -40,6 +40,8 @@ export const translations = {
         settings: 'Configuración',
         selectLanguage: 'Seleccionar Idioma',
         languageChanged: 'Idioma cambiado a {lang}',
+        extensionSettings: 'Configuración de la Extensión',
+        changeLanguage: 'Cambiar Idioma',
         noAccountsToRemove: 'No hay cuentas para eliminar.',
         selectAccountToRemove: 'Seleccionar cuenta a eliminar',
         accountRemoved: 'Cuenta "{name}" eliminada.',
