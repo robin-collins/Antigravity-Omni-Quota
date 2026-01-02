@@ -29,7 +29,8 @@ export const translations = {
         unknown: 'Unknown',
         ready: 'Ready',
         in: 'in',
-        model: 'Model'
+        model: 'Model',
+        openSettings: 'Open Settings'
     },
     es: {
         activating: 'Activando...',
@@ -61,7 +62,8 @@ export const translations = {
         unknown: 'Desconocido',
         ready: 'Listo',
         in: 'en',
-        model: 'Modelo'
+        model: 'Modelo',
+        openSettings: 'Abrir Configuración'
     },
     ru: {
         activating: 'Активация...',
@@ -93,7 +95,8 @@ export const translations = {
         unknown: 'Неизвестно',
         ready: 'Готово',
         in: 'через',
-        model: 'Модель'
+        model: 'Модель',
+        openSettings: 'Открыть настройки'
     },
     zh: {
         activating: '激活中...',
@@ -125,7 +128,8 @@ export const translations = {
         unknown: '未知',
         ready: '准备就绪',
         in: '在',
-        model: '模型'
+        model: '模型',
+        openSettings: '打开设置'
     },
     ko: {
         activating: '활성화 중...',
@@ -157,7 +161,8 @@ export const translations = {
         unknown: '알 수 없음',
         ready: '준비됨',
         in: '에',
-        model: '모델'
+        model: '모델',
+        openSettings: '설정 열기'
     },
     ja: {
         activating: 'アクティブ化中...',
@@ -189,7 +194,8 @@ export const translations = {
         unknown: '不明',
         ready: '準備完了',
         in: 'で',
-        model: 'モデル'
+        model: 'モデル',
+        openSettings: '設定を開く'
     },
     fr: {
         activating: 'Activation...',
@@ -221,7 +227,8 @@ export const translations = {
         unknown: 'Inconnu',
         ready: 'Prêt',
         in: 'dans',
-        model: 'Modèle'
+        model: 'Modèle',
+        openSettings: 'Ouvrir les paramètres'
     },
     de: {
         activating: 'Aktivierung...',
@@ -253,7 +260,8 @@ export const translations = {
         unknown: 'Unbekannt',
         ready: 'Bereit',
         in: 'in',
-        model: 'Modell'
+        model: 'Modell',
+        openSettings: 'Einstellungen öffnen'
     }
 };
 

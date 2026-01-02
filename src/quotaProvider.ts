@@ -46,8 +46,9 @@ export class QuotaProvider implements vscode.TreeDataProvider<QuotaItem> {
             const lang = vscode.workspace.getConfiguration('antigravity-quota').get('language', 'auto') as string;
             const settingsText = getTranslation('settings', lang);
             const configureText = getTranslation('extensionSettings', lang);
+            const openSettingsText = getTranslation('openSettings', lang);
             const settingsItem = new QuotaItem(settingsText, vscode.TreeItemCollapsibleState.None, 'settings-gear', undefined, configureText);
-            settingsItem.command = { command: 'antigravity-quota.settings', title: 'Open Settings' };
+            settingsItem.command = { command: 'antigravity-quota.settings', title: openSettingsText };
             accountItems.push(settingsItem);
 
             return Promise.resolve(accountItems);
