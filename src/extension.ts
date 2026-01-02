@@ -90,6 +90,26 @@ export async function activate(context: vscode.ExtensionContext) {
             await accountManager.reset();
             quotaProvider.refresh(null, false);
             vscode.window.showInformationMessage('Todas las cuentas eliminadas.');
+        }),
+        vscode.commands.registerCommand('antigravity-quota.removeAccount', async () => {
+            const accounts = accountManager.getAccounts();
+            if (accounts.length === 0) {
+                vscode.window.showInformationMessage('No hay cuentas para eliminar.');
+                return;
+            }
+            const items = accounts.map(acc => ({
+                label: acc.displayName,
+                description: `ID: ${acc.id}`,
+                account: acc
+            }));
+            const selected = await vscode.window.showQuickPick(items, {
+                placeHolder: 'Selecciona la cuenta a eliminar'
+            });
+            if (selected && selected.account) {
+                await accountManager.removeAccount(selected.account.id);
+                quotaProvider.refresh(null, false);
+                vscode.window.showInformationMessage(`Cuenta "${selected.account.displayName}" eliminada.`);
+            }
         })
     );
 
@@ -142,7 +162,7 @@ async function runCheck(
             try {
                 // Fetch
                 const status = await service.fetchStatus(conn);
-                console.log('Status data for PID', conn.pid, ':', status);
+                // console.log('Status data for PID', conn.pid, ':', status); // Reduced logging
 
                 let quota = { total: 0, remaining: 0, used: 0 };
                 let models: any[] = [];
@@ -208,7 +228,7 @@ async function runCheck(
                         }
                 }
 
-                await accountManager.updateAccount(userId, {
+                const success = await accountManager.updateAccount(userId, {
                     id: userId,
                     displayName: realName,
                     lastActive: Date.now(),
@@ -217,6 +237,11 @@ async function runCheck(
                     tier: 'Pro',
                     rawContext: {}
                 });
+                if (!success) {
+                    console.log(`[Omni-Quota] Skipped adding account ${userId} due to limit`);
+                    vscode.window.showWarningMessage(`Límite de 10 cuentas alcanzado. Elimina una cuenta para añadir otra.`);
+                    continue;
+                }
 
                 // UPDATE UI IMMEDIATELY
                 const currentInfo = { quota, models, name: realName };

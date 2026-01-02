@@ -32,6 +32,10 @@
       {
         "command": "antigravity-quota.clearAccounts",
         "title": "Clear All Accounts"
+      },
+      {
+        "command": "antigravity-quota.removeAccount",
+        "title": "Remove Account"
       }
     ],
     "configuration": {

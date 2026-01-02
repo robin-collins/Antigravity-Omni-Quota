@@ -23,7 +23,7 @@ export interface AccountData {
 
 export class AccountManager {
     private static readonly STORAGE_KEY = 'antigravity_accounts';
-    private static readonly MAX_ACCOUNTS = 5;
+    private static readonly MAX_ACCOUNTS = 10;
     private cache: Map<string, AccountData> = new Map();
 
     constructor(private globalState: vscode.Memento) {
@@ -39,7 +39,12 @@ export class AccountManager {
         return Array.from(this.cache.values()).sort((a, b) => b.lastActive - a.lastActive);
     }
 
-    public async updateAccount(id: string, data: AccountData) {
+    public async updateAccount(id: string, data: AccountData): Promise<boolean> {
+        const isNew = !this.cache.has(id);
+        if (isNew && this.cache.size >= AccountManager.MAX_ACCOUNTS) {
+            return false; // Exceeded limit
+        }
+
         // Check for duplicate displayName
         const existing = Array.from(this.cache.values());
         const duplicates = existing.filter(acc => acc.displayName === data.displayName && acc.id !== id);
@@ -48,14 +53,8 @@ export class AccountManager {
         }
         this.cache.set(id, data);
 
-        // Limit to 5 accounts, remove oldest inactive
-        if (this.cache.size > 5) {
-            const sorted = Array.from(this.cache.values()).sort((a, b) => a.lastActive - b.lastActive);
-            const toRemove = sorted.slice(0, this.cache.size - 5);
-            toRemove.forEach(acc => this.cache.delete(acc.id));
-        }
-
         await this.persist();
+        return true;
     }
 
     public async removeAccount(id: string) {
