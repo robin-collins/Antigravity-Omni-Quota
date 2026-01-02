@@ -29,16 +29,23 @@ export class QuotaProvider implements vscode.TreeDataProvider<QuotaItem> {
             const currentAccount = accounts.reduce((prev, curr) => prev.lastActive > curr.lastActive ? prev : curr);
             const config = vscode.workspace.getConfiguration('antigravity-quota');
             const language = config.get('language', 'auto') as string;
-            return Promise.resolve(accounts.map(acc => {
-                const isActive = acc.isActive !== false; // Default to active if not set
-                const label = acc.displayName + (isActive ? ' (Active)' : ' (Inactive)');
+            const sortedAccounts = accounts.sort((a, b) => b.lastActive - a.lastActive);
+            const accountItems = sortedAccounts.map((acc, index) => {
+                const isCurrent = index === 0; // Most recent is current
+                const label = acc.displayName + (isCurrent ? ' (Current)' : '');
                 const state = vscode.TreeItemCollapsibleState.Collapsed;
-                const icon = isActive ? 'pass-filled' : 'account';
-                const credits = acc.quota.remaining.toLocaleString();
+                const icon = isCurrent ? 'pass-filled' : 'account';
                 const modelsCount = acc.models?.length || 0;
                 const desc = `${modelsCount} models`;
                 return new QuotaItem(label, state, icon, acc, desc);
-            }));
+            });
+
+            // Add settings item at the end
+            const settingsItem = new QuotaItem('Settings', vscode.TreeItemCollapsibleState.None, 'settings-gear', undefined, 'Configure extension');
+            settingsItem.command = { command: 'antigravity-quota.settings', title: 'Open Settings' };
+            accountItems.push(settingsItem);
+
+            return Promise.resolve(accountItems);
         }
 
         // Child: Details of an Account
