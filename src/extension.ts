@@ -165,6 +165,16 @@ export async function activate(context: vscode.ExtensionContext) {
             runCheck(quotaService, quotaProvider, accountManager, statusBarItem, treeView, context);
         }, pollingIntervalMs);
     }
+
+    // Auto refresh on focus
+    const autoRefreshOnFocus = config.get('autoRefreshOnFocus', false);
+    if (autoRefreshOnFocus) {
+        context.subscriptions.push(vscode.window.onDidChangeWindowState(state => {
+            if (state.focused) {
+                runCheck(quotaService, quotaProvider, accountManager, statusBarItem, treeView, context);
+            }
+        }));
+    }
 }
 
 export function deactivate() {
@@ -301,6 +311,17 @@ async function runCheck(
         treeView.message = undefined;
         provider.refresh(null, true);
 
+        // Notifications
+        const enableNotifications = config.get('enableNotifications', false) as boolean;
+        if (enableNotifications && primaryInfo && primaryInfo.models) {
+            const criticalThreshold = config.get('criticalThreshold', 30) as number;
+            const lowModels = primaryInfo.models.filter((m: any) => m.percentage <= criticalThreshold);
+            if (lowModels.length > 0) {
+                const modelNames = lowModels.map((m: any) => m.name).join(', ');
+                vscode.window.showWarningMessage(getTranslation('lowQuotaNotification', language).replace('{models}', modelNames));
+            }
+        }
+
     } catch (error) {
         console.error('[Omni-Quota] GLOBAL CRASH:', error);
         updateStatusBar(statusBar, null, context);
@@ -334,6 +355,10 @@ function updateStatusBar(item: vscode.StatusBarItem, info: any, context: vscode.
     }
     if (!showGeminiFlash) {
         filteredModels = filteredModels.filter((m: any) => !m.name.includes('Gemini') || !m.name.includes('Flash'));
+    }
+    const showOnlyLowQuota = config.get('showOnlyLowQuota', false) as boolean;
+    if (showOnlyLowQuota) {
+        filteredModels = filteredModels.filter((m: any) => m.percentage < warningThreshold);
     }
 
     const parts = [];

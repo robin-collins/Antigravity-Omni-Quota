@@ -92,6 +92,21 @@
           "enum": ["auto", "en", "es", "ru", "zh", "ko", "ja", "fr", "de"],
           "default": "auto",
           "description": "Language setting (auto detects VS Code locale)"
+        },
+        "antigravity-quota.enableNotifications": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable notifications when quota falls below critical threshold"
+        },
+        "antigravity-quota.showOnlyLowQuota": {
+          "type": "boolean",
+          "default": false,
+          "description": "Show only models with quota below warning threshold in status bar and tree"
+        },
+        "antigravity-quota.autoRefreshOnFocus": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically refresh quota when VS Code window gains focus"
         }
       }
     },

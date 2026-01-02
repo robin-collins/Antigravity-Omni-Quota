@@ -30,7 +30,8 @@ export const translations = {
         ready: 'Ready',
         in: 'in',
         model: 'Model',
-        openSettings: 'Open Settings'
+        openSettings: 'Open Settings',
+        lowQuotaNotification: 'Low quota for models: {models}'
     },
     es: {
         activating: 'Activando...',
@@ -63,7 +64,8 @@ export const translations = {
         ready: 'Listo',
         in: 'en',
         model: 'Modelo',
-        openSettings: 'Abrir Configuración'
+        openSettings: 'Abrir Configuración',
+        lowQuotaNotification: 'Cuota baja para modelos: {models}'
     },
     ru: {
         activating: 'Активация...',
@@ -162,7 +164,8 @@ export const translations = {
         ready: '준비됨',
         in: '에',
         model: '모델',
-        openSettings: '설정 열기'
+        openSettings: '설정 열기',
+        lowQuotaNotification: '모델의 낮은 할당량: {models}'
     },
     ja: {
         activating: 'アクティブ化中...',
@@ -228,7 +231,8 @@ export const translations = {
         ready: 'Prêt',
         in: 'dans',
         model: 'Modèle',
-        openSettings: 'Ouvrir les paramètres'
+        openSettings: 'Ouvrir les paramètres',
+        lowQuotaNotification: 'Quota faible pour les modèles : {models}'
     },
     de: {
         activating: 'Aktivierung...',
