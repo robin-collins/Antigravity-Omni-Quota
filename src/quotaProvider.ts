@@ -36,12 +36,17 @@ export class QuotaProvider implements vscode.TreeDataProvider<QuotaItem> {
                 const state = vscode.TreeItemCollapsibleState.Collapsed;
                 const icon = isCurrent ? 'pass-filled' : 'account';
                 const modelsCount = acc.models?.length || 0;
-                const desc = `${modelsCount} models`;
+                const language = vscode.workspace.getConfiguration('antigravity-quota').get('language', 'auto') as string;
+                const modelsText = getTranslation('models', language);
+                const desc = `${modelsCount} ${modelsText}`;
                 return new QuotaItem(label, state, icon, acc, desc);
             });
 
             // Add settings item at the end
-            const settingsItem = new QuotaItem('Settings', vscode.TreeItemCollapsibleState.None, 'settings-gear', undefined, 'Configure extension');
+            const lang = vscode.workspace.getConfiguration('antigravity-quota').get('language', 'auto') as string;
+            const settingsText = getTranslation('settings', lang);
+            const configureText = getTranslation('extensionSettings', lang);
+            const settingsItem = new QuotaItem(settingsText, vscode.TreeItemCollapsibleState.None, 'settings-gear', undefined, configureText);
             settingsItem.command = { command: 'antigravity-quota.settings', title: 'Open Settings' };
             accountItems.push(settingsItem);
 
@@ -78,7 +83,9 @@ export class QuotaProvider implements vscode.TreeDataProvider<QuotaItem> {
                     ));
                 });
             } else {
-                items.push(new QuotaItem("No model information", vscode.TreeItemCollapsibleState.None));
+                const lang = vscode.workspace.getConfiguration('antigravity-quota').get('language', 'auto') as string;
+                const noModelText = getTranslation('noModelInfo', lang);
+                items.push(new QuotaItem(noModelText, vscode.TreeItemCollapsibleState.None));
             }
 
             return Promise.resolve(items);
