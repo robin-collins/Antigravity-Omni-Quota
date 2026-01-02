@@ -89,12 +89,12 @@ export async function activate(context: vscode.ExtensionContext) {
             console.log('[Omni-Quota] Clear accounts command executed');
             await accountManager.reset();
             quotaProvider.refresh(null, false);
-            vscode.window.showInformationMessage('Todas las cuentas eliminadas.');
+            vscode.window.showInformationMessage('All accounts cleared.');
         }),
         vscode.commands.registerCommand('antigravity-quota.removeAccount', async () => {
             const accounts = accountManager.getAccounts();
             if (accounts.length === 0) {
-                vscode.window.showInformationMessage('No hay cuentas para eliminar.');
+                vscode.window.showInformationMessage('No accounts to remove.');
                 return;
             }
             const items = accounts.map(acc => ({
@@ -103,12 +103,12 @@ export async function activate(context: vscode.ExtensionContext) {
                 account: acc
             }));
             const selected = await vscode.window.showQuickPick(items, {
-                placeHolder: 'Selecciona la cuenta a eliminar'
+                placeHolder: 'Select account to remove'
             });
             if (selected && selected.account) {
                 await accountManager.removeAccount(selected.account.id);
                 quotaProvider.refresh(null, false);
-                vscode.window.showInformationMessage(`Cuenta "${selected.account.displayName}" eliminada.`);
+                vscode.window.showInformationMessage(`Account "${selected.account.displayName}" removed.`);
             }
         })
     );
@@ -239,7 +239,7 @@ async function runCheck(
                 });
                 if (!success) {
                     console.log(`[Omni-Quota] Skipped adding account ${userId} due to limit`);
-                    vscode.window.showWarningMessage(`Límite de 10 cuentas alcanzado. Elimina una cuenta para añadir otra.`);
+                    vscode.window.showWarningMessage(`Account limit of 10 reached. Remove an account to add another.`);
                     continue;
                 }
 

@@ -5,6 +5,7 @@ export interface AccountData {
     id: string;
     displayName: string;
     lastActive: number;
+    isActive?: boolean;
     quota: {
         total: number;
         used: number;
@@ -18,7 +19,7 @@ export interface AccountData {
     }[];
     tier: string;
     rawContext?: any;
-    data?: any; 
+    data?: any;
 }
 
 export class AccountManager {

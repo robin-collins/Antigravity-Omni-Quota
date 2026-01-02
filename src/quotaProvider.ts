@@ -30,13 +30,14 @@ export class QuotaProvider implements vscode.TreeDataProvider<QuotaItem> {
             const config = vscode.workspace.getConfiguration('antigravity-quota');
             const language = config.get('language', 'auto') as string;
             return Promise.resolve(accounts.map(acc => {
-                const label = acc.displayName;
-                const state = vscode.TreeItemCollapsibleState.Collapsed; // Default collapsed
-                const isCurrent = acc.id === currentAccount.id;
-                const modelsText = getTranslation('models', language);
-                const currentText = getTranslation('current', language);
-                const desc = acc.models ? `${acc.models.length} ${modelsText}${isCurrent ? ` (${currentText})` : ''}` : `Basic${isCurrent ? ` (${currentText})` : ''}`;
-                return new QuotaItem(label, state, isCurrent ? 'account' : undefined, acc, desc);
+                const isActive = acc.isActive !== false; // Default to active if not set
+                const label = acc.displayName + (isActive ? ' (Active)' : ' (Inactive)');
+                const state = vscode.TreeItemCollapsibleState.Collapsed;
+                const icon = isActive ? 'pass-filled' : 'account';
+                const credits = acc.quota.remaining.toLocaleString();
+                const modelsCount = acc.models?.length || 0;
+                const desc = `${modelsCount} models | ${credits} credits`;
+                return new QuotaItem(label, state, icon, acc, desc);
             }));
         }
 
@@ -70,7 +71,7 @@ export class QuotaProvider implements vscode.TreeDataProvider<QuotaItem> {
                     ));
                 });
             } else {
-                items.push(new QuotaItem("Sin información de modelos", vscode.TreeItemCollapsibleState.None));
+                items.push(new QuotaItem("No model information", vscode.TreeItemCollapsibleState.None));
             }
 
             return Promise.resolve(items);
@@ -102,7 +103,7 @@ class QuotaItem extends vscode.TreeItem {
         public readonly description?: string
     ) {
         super(label, collapsibleState);
-        this.tooltip = label;
+        this.tooltip = description || label;
         this.description = description; // Shows on the right in grey
         
         if (iconName) {
