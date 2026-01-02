@@ -19,7 +19,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
      const treeView = vscode.window.createTreeView('quotaExplorer', { treeDataProvider: quotaProvider });
      context.subscriptions.push(treeView);
-     const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+     const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 0);
      statusBarItem.command = 'antigravity-quota.showQuickMenu';
 
      // Read initial config
