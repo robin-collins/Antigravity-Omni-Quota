@@ -147,7 +147,12 @@ export async function activate(context: vscode.ExtensionContext) {
                     await config.update('language', langSelected.value, vscode.ConfigurationTarget.Global);
                     // Refresh tree view to apply translations
                     quotaProvider.refresh(null, true);
-                    vscode.window.showInformationMessage(getTranslation('languageChanged', language).replace('{lang}', langSelected.label));
+                    // Refresh status bar
+                    const lastCalculatedData = context.workspaceState.get('lastData', null);
+                    if (lastCalculatedData) {
+                        updateStatusBar(statusBarItem, lastCalculatedData, context);
+                    }
+                    vscode.window.showInformationMessage(getTranslation('languageChanged', langSelected.value).replace('{lang}', langSelected.label));
                 }
             }
         })
@@ -227,7 +232,7 @@ async function runCheck(
                                     pct = Math.round(cfg.quotaInfo.remainingFraction * 100);
                                 }
 
-                                let resetStr = "Unknown";
+                                let resetStr = getTranslation('unknown', language);
                                 let resetMinutes = 0;
                                 if (cfg.quotaInfo?.resetTime) {
                                     const rt = cfg.quotaInfo.resetTime;
@@ -241,12 +246,12 @@ async function runCheck(
                                                 const h = Math.floor((resetMinutes % 1440) / 60);
                                                 const m = resetMinutes % 60;
                                                 if (d > 0) {
-                                                    resetStr = `en ${d}d ${h}h ${m}m`;
+                                                    resetStr = `${getTranslation('in', language)} ${d}d ${h}h ${m}m`;
                                                 } else {
-                                                    resetStr = `en ${h}h ${m}m`;
+                                                    resetStr = `${getTranslation('in', language)} ${h}h ${m}m`;
                                                 }
                                             } else {
-                                                resetStr = "Listo";
+                                                resetStr = getTranslation('ready', language);
                                                 resetMinutes = 0;
                                             }
                                         } catch(e) {
@@ -306,23 +311,24 @@ async function runCheck(
 }
 
 function updateStatusBar(item: vscode.StatusBarItem, info: any, context: vscode.ExtensionContext) {
+    const config = vscode.workspace.getConfiguration('antigravity-quota');
+    const language = config.get('language', 'auto') as string;
+
     item.hide();
     if (!info) {
         item.text = "$(circle-slash) Omni-Quota";
-        item.tooltip = "Offline";
+        item.tooltip = getTranslation('offline', language);
         item.show(); // Always show
         return;
     }
 
     context.workspaceState.update('lastData', info);
 
-    const config = vscode.workspace.getConfiguration('antigravity-quota');
     const warningThreshold = config.get('warningThreshold', 50) as number;
     const criticalThreshold = config.get('criticalThreshold', 30) as number;
     const statusBarStyle = config.get('statusBarStyle', 'dots') as string;
     const showGeminiPro = config.get('showGeminiPro', true) as boolean;
     const showGeminiFlash = config.get('showGeminiFlash', true) as boolean;
-    const language = config.get('language', 'auto') as string;
 
     // Filter models based on config
     let filteredModels = info.models || [];

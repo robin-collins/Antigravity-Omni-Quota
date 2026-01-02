@@ -32,11 +32,11 @@ export class QuotaProvider implements vscode.TreeDataProvider<QuotaItem> {
             const sortedAccounts = accounts.sort((a, b) => b.lastActive - a.lastActive);
             const accountItems = sortedAccounts.map((acc, index) => {
                 const isCurrent = index === 0; // Most recent is current
-                const label = acc.displayName + (isCurrent ? ' (Current)' : '');
+                const currentText = getTranslation('current', language);
+                const label = acc.displayName + (isCurrent ? ` (${currentText})` : '');
                 const state = vscode.TreeItemCollapsibleState.Collapsed;
                 const icon = isCurrent ? 'pass-filled' : 'account';
                 const modelsCount = acc.models?.length || 0;
-                const language = vscode.workspace.getConfiguration('antigravity-quota').get('language', 'auto') as string;
                 const modelsText = getTranslation('models', language);
                 const desc = `${modelsCount} ${modelsText}`;
                 return new QuotaItem(label, state, icon, acc, desc);
@@ -55,6 +55,7 @@ export class QuotaProvider implements vscode.TreeDataProvider<QuotaItem> {
 
         // Child: Details of an Account
         if (element.account) {
+            const lang = vscode.workspace.getConfiguration('antigravity-quota').get('language', 'auto') as string;
             const items: QuotaItem[] = [];
             const acc = element.account;
 
@@ -66,7 +67,7 @@ export class QuotaProvider implements vscode.TreeDataProvider<QuotaItem> {
             if (acc.models && acc.models.length > 0) {
                 // items.push(new QuotaItem("--- Modelos ---", vscode.TreeItemCollapsibleState.None));
                 acc.models.forEach(m => {
-                    const mName = m.name || 'Modelo';
+                    const mName = m.name || getTranslation('model', lang);
                     const mPct = m.percentage ?? 0;
                     const config = vscode.workspace.getConfiguration('antigravity-quota');
                     const warningThreshold = config.get('warningThreshold', 50) as number;
@@ -83,7 +84,6 @@ export class QuotaProvider implements vscode.TreeDataProvider<QuotaItem> {
                     ));
                 });
             } else {
-                const lang = vscode.workspace.getConfiguration('antigravity-quota').get('language', 'auto') as string;
                 const noModelText = getTranslation('noModelInfo', lang);
                 items.push(new QuotaItem(noModelText, vscode.TreeItemCollapsibleState.None));
             }
