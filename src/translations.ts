@@ -21,7 +21,8 @@ export const translations = {
         accountRemoved: 'Account "{name}" removed.',
         allAccountsCleared: 'All accounts cleared.',
         accountLimitReached: 'Account limit of 10 reached. Remove an account to add another.',
-        noModelInfo: 'No model information'
+        noModelInfo: 'No model information',
+        resetLabel: 'Reset:'
     },
     es: {
         activating: 'Activando...',
@@ -47,7 +48,8 @@ export const translations = {
         accountRemoved: 'Cuenta "{name}" eliminada.',
         allAccountsCleared: 'Todas las cuentas eliminadas.',
         accountLimitReached: 'Límite de 10 cuentas alcanzado. Elimina una cuenta para añadir otra.',
-        noModelInfo: 'Sin información de modelos'
+        noModelInfo: 'Sin información de modelos',
+        resetLabel: 'Reinicio:'
     },
     ru: {
         activating: 'Активация...',
@@ -71,7 +73,8 @@ export const translations = {
         accountRemoved: 'Аккаунт "{name}" удален.',
         allAccountsCleared: 'Все аккаунты очищены.',
         accountLimitReached: 'Лимит аккаунтов 10 достигнут. Удалите аккаунт, чтобы добавить другой.',
-        noModelInfo: 'Нет информации о моделях'
+        noModelInfo: 'Нет информации о моделях',
+        resetLabel: 'Сброс:'
     },
     zh: {
         activating: '激活中...',

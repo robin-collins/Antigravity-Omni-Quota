@@ -57,7 +57,10 @@ export async function activate(context: vscode.ExtensionContext) {
                       const dots = '●'.repeat(Math.round((m.percentage / 100) * 10)) + '○'.repeat(10 - Math.round((m.percentage / 100) * 10));
                       return {
                           label: `${color} ${m.name}`,
-                          description: `${m.percentage}% | Reset: ${m.resetTime}`,
+                          const config = vscode.workspace.getConfiguration('antigravity-quota');
+                          const language = config.get('language', 'auto') as string;
+                          const resetLabel = getTranslation('resetLabel', language);
+                          description: `${m.percentage}% | ${resetLabel} ${m.resetTime}`,
                           detail: dots,
                           model: m
                       };
@@ -144,9 +147,9 @@ export async function activate(context: vscode.ExtensionContext) {
                 });
                 if (langSelected) {
                     await config.update('language', langSelected.value, vscode.ConfigurationTarget.Global);
+                    // Refresh tree view to apply translations
+                    quotaProvider.refresh(null, true);
                     vscode.window.showInformationMessage(getTranslation('languageChanged', language).replace('{lang}', langSelected.label));
-                    // Reload window to apply language change
-                    await vscode.commands.executeCommand('workbench.action.reloadWindow');
                 }
             }
         })

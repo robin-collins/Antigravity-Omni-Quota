@@ -7,3 +7,10 @@ process_dump.*
 debug_*
 snippet_*
 *.vsix
+package-lock.json
+dist/
+build/
+*.tmp
+Thumbs.db
+.vscode/test-results/
+.env
