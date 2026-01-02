@@ -152,7 +152,7 @@ async function runCheck(
                 if (status && status.userStatus) {
                         realName = status.userStatus.name || realName;
 
-                        userId = `${conn.initialData?.context?.properties?.installationId || 'unknown'}_${realName}`;
+                        userId = `${conn.initialData?.context?.properties?.installationId || 'unknown'}_${status.userStatus.email || realName}`;
 
                         let configData = status.userStatus.cascadeModelConfigData;
                         if (!configData && status.userStatus.planStatus) {
@@ -170,12 +170,11 @@ async function runCheck(
                                 let resetStr = "Unknown";
                                 let resetMinutes = 0;
                                 if (cfg.quotaInfo?.resetTime) {
-                                    if (typeof cfg.quotaInfo.resetTime === 'string' && !cfg.quotaInfo.resetTime.includes('en') && !cfg.quotaInfo.resetTime.includes('Listo')) {
-                                        // If it's a pre-formatted string, use it
-                                        resetStr = cfg.quotaInfo.resetTime;
-                                    } else {
+                                    const rt = cfg.quotaInfo.resetTime;
+                                    if (typeof rt === 'string' && rt.match(/^\d{4}-\d{2}-\d{2}T/)) {
+                                        // It's an ISO date string, parse it
                                         try {
-                                            const reset = new Date(cfg.quotaInfo.resetTime);
+                                            const reset = new Date(rt);
                                             resetMinutes = Math.floor((reset.getTime() - now) / 60000);
                                             if (resetMinutes > 0) {
                                                 const d = Math.floor(resetMinutes / 1440);
@@ -191,8 +190,11 @@ async function runCheck(
                                                 resetMinutes = 0;
                                             }
                                         } catch(e) {
-                                            resetStr = cfg.quotaInfo.resetTime.toString();
+                                            resetStr = rt;
                                         }
+                                    } else {
+                                        // Pre-formatted string or other
+                                        resetStr = rt.toString();
                                     }
                                 }
 
