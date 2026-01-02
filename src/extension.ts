@@ -55,11 +55,9 @@ export async function activate(context: vscode.ExtensionContext) {
                   const items: any[] = filteredModels.map((m: any) => {
                       const color = m.percentage >= warningThreshold ? '🟢' : m.percentage >= criticalThreshold ? '🟡' : m.percentage > 0 ? '🔴' : '⚫';
                       const dots = '●'.repeat(Math.round((m.percentage / 100) * 10)) + '○'.repeat(10 - Math.round((m.percentage / 100) * 10));
+                      const resetLabel = getTranslation('resetLabel', language);
                       return {
                           label: `${color} ${m.name}`,
-                          const config = vscode.workspace.getConfiguration('antigravity-quota');
-                          const language = config.get('language', 'auto') as string;
-                          const resetLabel = getTranslation('resetLabel', language);
                           description: `${m.percentage}% | ${resetLabel} ${m.resetTime}`,
                           detail: dots,
                           model: m
