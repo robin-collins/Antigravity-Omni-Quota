@@ -1,16 +1,25 @@
+# Dependencies
 node_modules/
+
+# Build Output
 out/
-*.log
-.DS_Store
-.vscode/settings.json
-process_dump.*
-debug_*
-snippet_*
-*.vsix
-package-lock.json
 dist/
 build/
+*.vsix
+
+# Tools & Scripts
+# Keep debug scripts (.js) but ignore generated data
+process_dump.*
+snippet_out*
+snippet_*
+*.log
 *.tmp
+
+# System
+.DS_Store
 Thumbs.db
+
+# IDE & Config
 .vscode/test-results/
+.vscode/settings.json
 .env

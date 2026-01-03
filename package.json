@@ -1,3 +1,4 @@
+
 {
   "name": "antigravity-omni-quota",
   "displayName": "Antigravity Omni-Quota",
@@ -11,8 +12,7 @@
     "Other"
   ],
   "activationEvents": [
-    "onStartupFinished",
-    "onView:quotaExplorer"
+    "onStartupFinished"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -38,8 +38,20 @@
         "title": "Remove Account"
       },
       {
+        "command": "antigravity-quota.cleanupAccounts",
+        "title": "Clean Up Invalid Accounts"
+      },
+      {
+        "command": "antigravity-quota.validateAccounts",
+        "title": "Validate Accounts"
+      },
+      {
         "command": "antigravity-quota.settings",
         "title": "Settings"
+      },
+      {
+        "command": "antigravity-quota.updateAllAccounts",
+        "title": "Update All Accounts Times"
       }
     ],
     "configuration": {
@@ -123,7 +135,9 @@
       "quota-explorer-container": [
         {
           "id": "quotaExplorer",
-          "name": "Linked Accounts"
+          "name": "Linked Accounts",
+          "visibility": "visible",
+          "icon": "media/quota-icon.svg"
         }
       ]
     }

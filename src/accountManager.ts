@@ -15,6 +15,7 @@ export interface AccountData {
         percentage: number;
         remaining?: string;
         resetTime?: string;
+        resetTimestamp?: number;
     }[];
     tier: string;
     rawContext?: any;
@@ -45,16 +46,110 @@ export class AccountManager {
             return false; // Exceeded limit
         }
 
+        // Enhanced validation for account data
+        if (!this.isValidAccountData(data)) {
+            console.log(`[Omni-Quota] Rejected invalid account data: id=${id}, name="${data.displayName}"`);
+            return false;
+        }
+
         // Check for duplicate displayName
         const existing = Array.from(this.cache.values());
         const duplicates = existing.filter(acc => acc.displayName === data.displayName && acc.id !== id);
         if (duplicates.length > 0) {
             data.displayName = `${data.displayName} (${duplicates.length + 1})`;
         }
+        
         this.cache.set(id, data);
 
         await this.persist();
         return true;
+    }
+
+    /**
+     * Validates account data to prevent creation of invalid accounts
+     */
+    private isValidAccountData(data: AccountData): boolean {
+        // Check for invalid display names - MORE STRICT
+        const invalidNames = ['undefined', 'account', 'Usuario', '', 'undefined_', 'account_', 'user_', 'guest_', 'test_'];
+        const displayNameLower = data.displayName.toLowerCase().trim();
+        
+        // Exact matches
+        if (invalidNames.includes(displayNameLower)) {
+            return false;
+        }
+        
+        // Contains invalid patterns
+        if (displayNameLower.includes('undefined') ||
+            displayNameLower.includes('account') ||
+            displayNameLower.includes('user') ||
+            displayNameLower.includes('guest') ||
+            displayNameLower.includes('test') ||
+            displayNameLower.includes('temp') ||
+            displayNameLower.includes('demo')) {
+            return false;
+        }
+
+        // Check for very short names (likely invalid)
+        if (data.displayName.trim().length < 3) {
+            return false;
+        }
+
+        // Check for valid email pattern in ID (if available)
+        if (data.id && data.id.includes('@')) {
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(data.id.split('_').pop() || '')) {
+                return false;
+            }
+        }
+
+        // Check for valid models data - MORE STRICT
+        if (data.models && data.models.length > 0) {
+            // At least one model should have valid data
+            const validModels = data.models.filter(m =>
+                m.name && m.name.trim().length > 0 &&
+                typeof m.percentage === 'number' &&
+                m.percentage >= 0 &&
+                m.percentage <= 100
+            );
+            if (validModels.length === 0) {
+                return false;
+            }
+        } else {
+            // If no models, it's likely an invalid account
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Cleans up invalid accounts from storage
+     */
+    public async cleanupInvalidAccounts(): Promise<void> {
+        console.log('[Omni-Quota] Starting account cleanup...');
+        const accounts = Array.from(this.cache.values());
+        const validAccounts: AccountData[] = [];
+        let removedCount = 0;
+
+        for (const account of accounts) {
+            console.log(`[Omni-Quota] Checking account: "${account.displayName}" (${account.id})`);
+            if (this.isValidAccountData(account)) {
+                validAccounts.push(account);
+                console.log(`[Omni-Quota] Account valid: "${account.displayName}"`);
+            } else {
+                console.log(`[Omni-Quota] Removing invalid account: ${account.displayName} (${account.id})`);
+                removedCount++;
+            }
+        }
+
+        if (removedCount > 0) {
+            this.cache.clear();
+            validAccounts.forEach(acc => this.cache.set(acc.id, acc));
+            await this.persist();
+            console.log(`[Omni-Quota] Cleanup completed. Removed ${removedCount} invalid accounts.`);
+        } else {
+            console.log('[Omni-Quota] No invalid accounts found during cleanup.');
+        }
     }
 
     public async removeAccount(id: string) {
