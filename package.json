@@ -9,8 +9,27 @@
     "vscode": "^1.75.0"
   },
   "categories": [
+    "Machine Learning",
+    "Visualization",
     "Other"
   ],
+  "keywords": [
+    "antigravity",
+    "ai",
+    "quota",
+    "monitoring",
+    "dashboard",
+    "credits",
+    "multi-account"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RicardoGurrola15/Antigravity-Omni-Quota.git"
+  },
+  "bugs": {
+    "url": "https://github.com/RicardoGurrola15/Antigravity-Omni-Quota/issues"
+  },
+  "homepage": "https://github.com/RicardoGurrola15/Antigravity-Omni-Quota#readme",
   "activationEvents": [
     "onStartupFinished"
   ],

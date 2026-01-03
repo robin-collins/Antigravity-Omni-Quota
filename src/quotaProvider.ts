@@ -80,15 +80,24 @@ export class QuotaProvider implements vscode.TreeDataProvider<QuotaItem> {
                     const config = vscode.workspace.getConfiguration('antigravity-quota');
                     const warningThreshold = config.get('warningThreshold', 50) as number;
                     const criticalThreshold = config.get('criticalThreshold', 30) as number;
+                    
+                    // Unified dots: empty is thinner or different character? No, let's stick to circles but with color icons
                     const dots = '●'.repeat(Math.round((mPct / 100) * 5)) + '○'.repeat(5 - Math.round((mPct / 100) * 5));
-                    const icon = mPct >= warningThreshold ? 'check' : mPct >= criticalThreshold ? 'warning' : mPct > 0 ? 'error' : 'circle-slash';
-                    const resetInfo = m.resetTime ? ` | ${m.resetTime}` : '';
+                    
+                    // Native VS Code icons for status
+                    let icon = 'circle-outline';
+                    if (mPct >= warningThreshold) icon = 'pass-filled';
+                    else if (mPct >= criticalThreshold) icon = 'info';
+                    else if (mPct > 0) icon = 'warning';
+                    else icon = 'error';
+
+                    const resetInfo = m.resetTime ? ` [${m.resetTime}]` : '';
                     items.push(new QuotaItem(
                         `${mName}`,
                         vscode.TreeItemCollapsibleState.None,
                         icon,
                         undefined,
-                        `${dots} ${mPct}%${resetInfo}`
+                        `${mPct}% ${dots}${resetInfo}`
                     ));
                 });
             } else {

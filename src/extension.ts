@@ -654,8 +654,20 @@ function updateStatusBar(item: vscode.StatusBarItem, info: any, context: vscode.
         
         const color = model.percentage >= 50 ? '🟢' : model.percentage >= 30 ? '🟡' : '🔴';
         item.text = `${color} ${model.name}: ${model.percentage}%`;
+        
+        // Multi-line rich tooltip
         const remainingStr = getTranslation('remainingText', language);
-        item.tooltip = `${info.name || 'Account'}\n${model.name}: ${model.percentage}% ${remainingStr}`;
+        const modelsSummary = info.models.slice(0, 5).map((m: any) => {
+            const mColor = m.percentage >= 50 ? '🟢' : m.percentage >= 30 ? '🟡' : '🔴';
+            return `${mColor} ${m.name}: ${m.percentage}%`;
+        }).join('\n');
+        
+        const tooltip = new vscode.MarkdownString();
+        tooltip.appendMarkdown(`### 🌌 ${info.name || 'Account'}\n\n`);
+        tooltip.appendMarkdown(`${modelsSummary}\n\n`);
+        tooltip.appendMarkdown(`---\n*${getTranslation('currentSessionQuotas', language)}*`);
+        
+        item.tooltip = tooltip;
         item.command = 'antigravity-quota.showQuickMenu';
         item.show();
         return;
