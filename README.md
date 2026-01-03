@@ -1,39 +1,70 @@
-# Antigravity Omni-Quota
+# 🌌 Antigravity Omni-Quota
 
-A VS Code extension for monitoring usage quotas across multiple Antigravity AI accounts.
+**Antigravity Omni-Quota** is a high-performance VS Code extension designed to provide a unified, persistent, and multi-language dashboard for monitoring Antigravity AI quotas. 
 
-## Features
+Unlike standard tools that only show the current session, **Omni-Quota** acts as a central hub for all your accounts, allowing you to track quotas, remaining credits, and reset periods across multiple identities in a single interface.
 
-- Automatic detection of Antigravity processes
-- Real-time quota monitoring
-- Multi-account support
-- Multi-language interface (English, Spanish, Russian, Chinese, Korean, Japanese, French, German)
-- Configurable display options
+---
 
-## Installation
+## 🚀 Key Features
 
-1. Clone the repository
-2. Run `npm install`
-3. Run `npm run compile`
-4. Open in VS Code and press F5 to debug
+- **🔗 Multi-Account Hub**: Store and monitor all your Antigravity accounts simultaneously. No more logging in and out just to check your limits.
+- **⚡ Zero-Config Scanning**: Automatically detects active Antigravity language server processes on your system. No API keys or manual setup required.
+- **⏲️ Real-Time Reset Countdowns**: Accurate, client-side timers that track when your quotas will reset (e.g., "resets in 2h 15m"), even for accounts that are currently offline.
+- **📊 Quick Menu Access**: A sleek status bar integration with a "Quick Pick" menu to quickly switch focus between models and view granular details.
+- **🌍 Global Localization**: Fully translated into **8+ languages**, including English, Español, Русский, 中文, 한국어, 日本語, Français, and Deutsch.
+- **💾 Persistent State**: Your accounts are safely stored in VS Code's global storage, ensuring they are there every time you open your editor.
 
-## Usage
+---
 
-The extension automatically detects running Antigravity processes and displays quota information in the status bar and sidebar.
+## 🛠️ Technical Highlights
 
-## Configuration
+- **Intelligent Bootstrapping**: Automatically repairs legacy account data to ensure accurate countdowns.
+- **Optimized Performance**: Dual-interval polling system (Fast UI updates vs. full system scans) ensures low CPU usage.
+- **Process Discovery**: Cross-platform logic (Windows/Unix) for robust port detection and API communication.
 
-Access settings via VS Code Settings > Extensions > Antigravity Omni-Quota
+For a deeper dive into how this works, check out our [Technical Architecture](./docs/TECHNICAL_ARCHITECTURE.md).
 
-- Language selection
-- Polling interval
-- Display style
-- Warning/critical thresholds
+---
 
-## Contributing
+## 📂 Documentation
 
-Contributions welcome! Please submit issues and pull requests.
+Detailed documentation is available in the `docs/` folder:
+- [**Overview & Benefits**](./docs/OVERVIEW.md) - Why use Omni-Quota?
+- [**Technical Architecture**](./docs/TECHNICAL_ARCHITECTURE.md) - Deep dive into scanning and persistence.
+- [**File Breakdown**](./docs/FILE_BREAKDOWN.md) - Guide for developers on the source code structure.
 
-## License
+---
 
-MIT
+## 📥 Installation & Setup
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/RicardoGurrola15/Antigravity-Omni-Quota.git
+   ```
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+3. **Compile**:
+   ```bash
+   npm run compile
+   ```
+4. **Run**:
+   Open the project in VS Code and press `F5` to launch a new Extension Development Host window.
+
+---
+
+## ⚙️ Configuration
+
+Customize the extension to your workflow via **Settings > Extensions > Antigravity Omni-Quota**:
+- Change the interface **Language**.
+- Adjust **Polling Intervals** to balance frequency and performance.
+- Set **Warning & Critical Thresholds** for visual cues.
+- Toggle visibility for specific models (Pro, Flash, etc.).
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License.
