@@ -113,9 +113,11 @@ function registerCommands(
 ): vscode.Disposable[] {
     const commands = [
         vscode.commands.registerCommand('antigravity-quota.forceRefresh', async () => {
+            const config = vscode.workspace.getConfiguration('antigravity-quota');
+            const language = config.get('language', 'auto') as string;
             console.log('[Omni-Quota] Force refresh command executed');
             await forceRefresh(quotaService, quotaProvider, accountManager, statusBarItem, treeView, context);
-            vscode.window.showInformationMessage('Quota data refreshed successfully');
+            vscode.window.showInformationMessage(getTranslation('refreshSuccess', language));
         }),
         vscode.commands.registerCommand('antigravity-quota.showQuickMenu', async () => {
             const lastCalculatedData = context.workspaceState.get('lastData', null) as any;
@@ -146,7 +148,7 @@ function registerCommands(
                     };
                 });
                 const selected = await vscode.window.showQuickPick(items, {
-                    placeHolder: getTranslation('currentSessionQuotas', 'auto'),
+                    placeHolder: `${lastCalculatedData.name} - ${getTranslation('currentSessionQuotas', 'auto')}`,
                     ignoreFocusOut: false
                 });
                 if (selected && selected.model) {
@@ -180,10 +182,12 @@ function registerCommands(
             await runCheck(quotaService, quotaProvider, accountManager, statusBarItem, treeView, context);
         }),
         vscode.commands.registerCommand('antigravity-quota.cleanupAccounts', async () => {
+            const config = vscode.workspace.getConfiguration('antigravity-quota');
+            const language = config.get('language', 'auto') as string;
             console.log('[Omni-Quota] Cleanup accounts command executed');
             await accountManager.cleanupInvalidAccounts();
             quotaProvider.refresh(null, false);
-            vscode.window.showInformationMessage('Invalid accounts cleaned up successfully');
+            vscode.window.showInformationMessage(getTranslation('cleanupSuccess', language));
             // Force refresh after cleanup
             await runCheck(quotaService, quotaProvider, accountManager, statusBarItem, treeView, context);
         }),
@@ -210,6 +214,8 @@ function registerCommands(
             }
         }),
         vscode.commands.registerCommand('antigravity-quota.validateAccounts', async () => {
+            const config = vscode.workspace.getConfiguration('antigravity-quota');
+            const language = config.get('language', 'auto') as string;
             console.log('[Omni-Quota] Validate accounts command executed');
             const accounts = accountManager.getAccounts();
             const invalidAccounts = accounts.filter(acc => {
@@ -221,9 +227,9 @@ function registerCommands(
             });
             
             if (invalidAccounts.length === 0) {
-                vscode.window.showInformationMessage('All accounts are valid');
+                vscode.window.showInformationMessage(getTranslation('allAccountsValid', language));
             } else {
-                const message = `Found ${invalidAccounts.length} invalid accounts. Run "Clean Up Invalid Accounts" to remove them.`;
+                const message = getTranslation('invalidAccountsFound', language).replace('{count}', invalidAccounts.length.toString());
                 vscode.window.showWarningMessage(message);
             }
         }),
@@ -503,7 +509,9 @@ export async function forceRefresh(
     } catch (error) {
         console.error('[Omni-Quota] Force refresh failed:', error);
         // Show error message to user
-        vscode.window.showErrorMessage('Failed to refresh quota data. Please check Antigravity connection.');
+        const config = vscode.workspace.getConfiguration('antigravity-quota');
+        const language = config.get('language', 'auto') as string;
+        vscode.window.showErrorMessage(getTranslation('refreshFailed', language));
     }
 }
 
@@ -603,6 +611,9 @@ function updateStatusBar(item: vscode.StatusBarItem, info: any, context: vscode.
         return;
     }
     
+    // SAVE DATA FOR QUICK MENU - This was missing and caused stale data!
+    context.workspaceState.update('lastData', info);
+    
     // If we have account info but no models, show account name with "No Models"
     if (info && info.name && (!info.models || info.models.length === 0)) {
         item.text = "$(person) " + info.name + ": " + getTranslation('noModelInfo', language);
@@ -617,8 +628,8 @@ function updateStatusBar(item: vscode.StatusBarItem, info: any, context: vscode.
     
     // If info has userStatus (from Antigravity), extract name
     if (info && info.userStatus && info.userStatus.name) {
-        item.text = "$(person) " + info.userStatus.name + ": Connected";
-        item.tooltip = "Antigravity connection active";
+        item.text = "$(person) " + info.userStatus.name + ": " + getTranslation('connected', language);
+        item.tooltip = getTranslation('connectionActive', language);
         item.command = 'antigravity-quota.showQuickMenu';
         item.show();
         return;
@@ -626,19 +637,25 @@ function updateStatusBar(item: vscode.StatusBarItem, info: any, context: vscode.
     
     // If we have account info but no models, show account name with "No Models"
     if (info && info.name && (!info.models || info.models.length === 0)) {
-        item.text = "$(person) " + info.name + ": Connected";
-        item.tooltip = "Antigravity connection active";
+        item.text = "$(person) " + info.name + ": " + getTranslation('connected', language);
+        item.tooltip = getTranslation('connectionActive', language);
         item.command = 'antigravity-quota.showQuickMenu';
         item.show();
         return;
     }
     
-    // If we have models, show the first one
+    // If we have models, show the selected one (or the first one)
     if (info && info.models && info.models.length > 0) {
-        const model = info.models[0];
+        const selectedModelName = context.workspaceState.get('selectedModel', '');
+        let model = info.models.find((m: any) => m.name === selectedModelName);
+        if (!model) {
+            model = info.models[0];
+        }
+        
         const color = model.percentage >= 50 ? '🟢' : model.percentage >= 30 ? '🟡' : '🔴';
         item.text = `${color} ${model.name}: ${model.percentage}%`;
-        item.tooltip = "Antigravity connection active";
+        const remainingStr = getTranslation('remainingText', language);
+        item.tooltip = `${info.name || 'Account'}\n${model.name}: ${model.percentage}% ${remainingStr}`;
         item.command = 'antigravity-quota.showQuickMenu';
         item.show();
         return;
@@ -646,8 +663,8 @@ function updateStatusBar(item: vscode.StatusBarItem, info: any, context: vscode.
     
     // Fallback: show connected status
     console.log('[Omni-Quota] DEBUG: No valid info provided to updateStatusBar, showing connected status');
-    item.text = "$(person) Antigravity Connected: Connected";
-    item.tooltip = "Antigravity connection active";
+    item.text = "$(person) Antigravity " + getTranslation('connected', language) + ": " + getTranslation('connected', language);
+    item.tooltip = getTranslation('connectionActive', language);
     item.command = 'antigravity-quota.showQuickMenu';
     item.show();
     return;

@@ -31,7 +31,15 @@ export const translations = {
         in: 'in',
         model: 'Model',
         openSettings: 'Open Settings',
-        lowQuotaNotification: 'Low quota for models: {models}'
+        lowQuotaNotification: 'Low quota for models: {models}',
+        connected: 'Connected',
+        connectionActive: 'Antigravity connection active',
+        remainingText: 'remaining',
+        refreshSuccess: 'Quota data refreshed successfully',
+        cleanupSuccess: 'Invalid accounts cleaned up successfully',
+        allAccountsValid: 'All accounts are valid',
+        invalidAccountsFound: 'Found {count} invalid accounts. Run "Clean Up Invalid Accounts" to remove them.',
+        refreshFailed: 'Failed to refresh quota data. Please check Antigravity connection.'
     },
     es: {
         activating: 'Activando...',
@@ -65,7 +73,15 @@ export const translations = {
         in: 'en',
         model: 'Modelo',
         openSettings: 'Abrir Configuración',
-        lowQuotaNotification: 'Cuota baja para modelos: {models}'
+        lowQuotaNotification: 'Cuota baja para modelos: {models}',
+        connected: 'Conectado',
+        connectionActive: 'Conexión Antigravity activa',
+        remainingText: 'restante',
+        refreshSuccess: 'Datos de cuota actualizados con éxito',
+        cleanupSuccess: 'Cuentas inválidas limpiadas con éxito',
+        allAccountsValid: 'Todas las cuentas son válidas',
+        invalidAccountsFound: 'Se encontraron {count} cuentas inválidas. Ejecuta "Limpiar Cuentas Inválidas" para eliminarlas.',
+        refreshFailed: 'Error al actualizar los datos de cuota. Por favor, verifica la conexión de Antigravity.'
     },
     ru: {
         activating: 'Активация...',
@@ -98,7 +114,15 @@ export const translations = {
         ready: 'Готово',
         in: 'через',
         model: 'Модель',
-        openSettings: 'Открыть настройки'
+        openSettings: 'Открыть настройки',
+        connected: 'Connected',
+        connectionActive: 'Antigravity connection active',
+        remainingText: 'remaining',
+        refreshSuccess: 'Quota data refreshed successfully',
+        cleanupSuccess: 'Invalid accounts cleaned up successfully',
+        allAccountsValid: 'All accounts are valid',
+        invalidAccountsFound: 'Found {count} invalid accounts. Run "Clean Up Invalid Accounts" to remove them.',
+        refreshFailed: 'Failed to refresh quota data. Please check Antigravity connection.'
     },
     zh: {
         activating: '激活中...',
@@ -131,7 +155,15 @@ export const translations = {
         ready: '准备就绪',
         in: '在',
         model: '模型',
-        openSettings: '打开设置'
+        openSettings: '打开设置',
+        connected: 'Connected',
+        connectionActive: 'Antigravity connection active',
+        remainingText: 'remaining',
+        refreshSuccess: 'Quota data refreshed successfully',
+        cleanupSuccess: 'Invalid accounts cleaned up successfully',
+        allAccountsValid: 'All accounts are valid',
+        invalidAccountsFound: 'Found {count} invalid accounts. Run "Clean Up Invalid Accounts" to remove them.',
+        refreshFailed: 'Failed to refresh quota data. Please check Antigravity connection.'
     },
     ko: {
         activating: '활성화 중...',
@@ -165,7 +197,15 @@ export const translations = {
         in: '에',
         model: '모델',
         openSettings: '설정 열기',
-        lowQuotaNotification: '모델의 낮은 할당량: {models}'
+        lowQuotaNotification: '모델의 낮은 할당량: {models}',
+        connected: 'Connected',
+        connectionActive: 'Antigravity connection active',
+        remainingText: 'remaining',
+        refreshSuccess: 'Quota data refreshed successfully',
+        cleanupSuccess: 'Invalid accounts cleaned up successfully',
+        allAccountsValid: 'All accounts are valid',
+        invalidAccountsFound: 'Found {count} invalid accounts. Run "Clean Up Invalid Accounts" to remove them.',
+        refreshFailed: 'Failed to refresh quota data. Please check Antigravity connection.'
     },
     ja: {
         activating: 'アクティブ化中...',
@@ -198,7 +238,15 @@ export const translations = {
         ready: '準備完了',
         in: 'で',
         model: 'モデル',
-        openSettings: '設定を開く'
+        openSettings: '設定を開く',
+        connected: 'Connected',
+        connectionActive: 'Antigravity connection active',
+        remainingText: 'remaining',
+        refreshSuccess: 'Quota data refreshed successfully',
+        cleanupSuccess: 'Invalid accounts cleaned up successfully',
+        allAccountsValid: 'All accounts are valid',
+        invalidAccountsFound: 'Found {count} invalid accounts. Run "Clean Up Invalid Accounts" to remove them.',
+        refreshFailed: 'Failed to refresh quota data. Please check Antigravity connection.'
     },
     fr: {
         activating: 'Activation...',
@@ -232,7 +280,15 @@ export const translations = {
         in: 'dans',
         model: 'Modèle',
         openSettings: 'Ouvrir les paramètres',
-        lowQuotaNotification: 'Quota faible pour les modèles : {models}'
+        lowQuotaNotification: 'Quota faible pour les modèles : {models}',
+        connected: 'Connected',
+        connectionActive: 'Antigravity connection active',
+        remainingText: 'remaining',
+        refreshSuccess: 'Quota data refreshed successfully',
+        cleanupSuccess: 'Invalid accounts cleaned up successfully',
+        allAccountsValid: 'All accounts are valid',
+        invalidAccountsFound: 'Found {count} invalid accounts. Run "Clean Up Invalid Accounts" to remove them.',
+        refreshFailed: 'Failed to refresh quota data. Please check Antigravity connection.'
     },
     de: {
         activating: 'Aktivierung...',
@@ -265,7 +321,15 @@ export const translations = {
         ready: 'Bereit',
         in: 'in',
         model: 'Modell',
-        openSettings: 'Einstellungen öffnen'
+        openSettings: 'Einstellungen öffnen',
+        connected: 'Verbunden',
+        connectionActive: 'Antigravity-Verbindung aktiv',
+        remainingText: 'verbleibend',
+        refreshSuccess: 'Kontingentdaten erfolgreich aktualisiert',
+        cleanupSuccess: 'Ungültige Konten erfolgreich bereinigt',
+        allAccountsValid: 'Alle Konten sind gültig',
+        invalidAccountsFound: 'Es wurden {count} ungültige Konten gefunden. Führen Sie "Ungültige Konten bereinigen" aus, um sie zu entfernen.',
+        refreshFailed: 'Fehler beim Aktualisieren der Kontingentdaten. Bitte überprüfen Sie die Antigravity-Verbindung.'
     }
 };
 
