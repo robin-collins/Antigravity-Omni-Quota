@@ -2,7 +2,7 @@
 
 All notable changes to the **Antigravity Omni-Quota** extension will be documented in this file.
 
-## [1.1.0] - 2026-01-03
+## [1.0.5] - 2026-01-03
 
 ### Added
 - **Visual Showcase**: Added high-quality screenshots and demonstrations to the README to better showcase the extension's premium UI.
