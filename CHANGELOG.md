@@ -2,6 +2,12 @@
 
 All notable changes to the **Antigravity Omni-Quota** extension will be documented in this file.
 
+## [1.1.0] - 2026-01-03
+
+### Added
+- **Visual Showcase**: Added high-quality screenshots and demonstrations to the README to better showcase the extension's premium UI.
+- **Enhanced Branding**: Updated project assets for a better presence in the VS Code Marketplace and Open VSX.
+
 ## [1.0.4] - 2026-01-03
 
 ### Improved

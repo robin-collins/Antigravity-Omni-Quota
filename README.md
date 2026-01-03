@@ -9,11 +9,18 @@ Unlike standard tools that only show the current session, **Omni-Quota** acts as
 ## 🚀 Key Features
 
 - **🔗 Multi-Account Hub**: Store and monitor all your Antigravity accounts simultaneously. No more logging in and out just to check your limits.
+  ![Multi-Account Panel](media/panelmultiaccounts.png)
+
 - **⚡ Zero-Config Scanning**: Automatically detects active Antigravity language server processes on your system.
 - **✨ Premium UI & Rich Tooltips**: Multi-line status bar dashboard showing all your models at once with native VS Code styling.
+  ![Mini Dashboard Tooltip](media/minidash.png)
+
 - **⏲️ Real-Time Reset Countdowns**: Accurate, client-side timers that track when your quotas will reset (e.g., "resets in 2h 15m").
 - **📊 Quick Menu Access**: A sleek status bar integration with a "Quick Pick" menu to quickly switch focus between models and view granular details.
+  ![Quick Menu](media/quickmenu.png)
+
 - **🌍 Global Localization**: Fully translated into **8+ languages**, including English, Español, Русский, 中文, 한국어, 日本語, Français, and Deutsch.
+  ![Language Support](media/Languages.png)
 - **💾 Persistent State**: Your accounts are safely stored in VS Code's global storage, ensuring they are there every time you open your editor.
 
 ---
