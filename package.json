@@ -1,9 +1,8 @@
-
 {
   "name": "antigravity-omni-quota",
   "displayName": "Antigravity Omni-Quota",
   "description": "A VS Code extension for managing Omni Quota accounts",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "publisher": "RicardoGurrola15",
   "icon": "icon.png",
   "engines": {
@@ -35,7 +34,7 @@
     "onStartupFinished",
     "onView:quotaExplorer"
   ],
-  "main": "./out/extension.js",
+  "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
@@ -106,7 +105,10 @@
         },
         "antigravity-quota.statusBarStyle": {
           "type": "string",
-          "enum": ["dots", "percentage"],
+          "enum": [
+            "dots",
+            "percentage"
+          ],
           "default": "dots",
           "description": "Status bar display style"
         },
@@ -122,7 +124,17 @@
         },
         "antigravity-quota.language": {
           "type": "string",
-          "enum": ["auto", "en", "es", "ru", "zh", "ko", "ja", "fr", "de"],
+          "enum": [
+            "auto",
+            "en",
+            "es",
+            "ru",
+            "zh",
+            "ko",
+            "ja",
+            "fr",
+            "de"
+          ],
           "default": "auto",
           "description": "Language setting (auto detects VS Code locale)"
         },
@@ -164,13 +176,16 @@
     }
   },
   "scripts": {
+    "vscode:prepublish": "npm run bundle",
     "compile": "tsc -b",
-    "watch": "tsc -b -w"
+    "watch": "tsc -b -w",
+    "bundle": "esbuild ./src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node"
   },
   "devDependencies": {
     "@types/node": "16.x",
     "@types/vscode": "^1.75.0",
     "axios": "^1.13.2",
+    "esbuild": "^0.27.2",
     "typescript": "^4.9.5"
   }
 }

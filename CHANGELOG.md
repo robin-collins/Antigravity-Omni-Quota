@@ -2,7 +2,13 @@
 
 All notable changes to the **Antigravity Omni-Quota** extension will be documented in this file.
 
-## [1.0.1] - 2026-01-03
+## [1.0.3] - 2026-01-03
+
+### Fixed
+- **Missing Dependency**: Bundled `axios` and other dependencies into a single file to prevent "Module not found" errors on fresh installations.
+- **Improved Reliability**: Switched to `esbuild` for production bundling.
+
+## [1.0.2] - 2026-01-03
 
 ### Fixed
 - **Sidebar Provider Error**: Fixed the "no data provider registered" error by adding explicit activation events (`onView:quotaExplorer`) and redundant provider registration.
