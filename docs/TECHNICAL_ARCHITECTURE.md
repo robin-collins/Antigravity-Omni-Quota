@@ -26,6 +26,7 @@ The `AccountManager` class handles the heavy lifting of storage:
 - **Limit Enforcement**: It prevents the sidebar from becoming cluttered by enforcing a configurable account limit (default 10).
 
 ## 5. UI Rendering
-The UI uses the `VS Code Tree Data Provider` API:
-- **QuotaProvider**: Dynamically builds the sidebar. It groups models under accounts and adds a special "Settings" node at the bottom for quick access.
-- **StatusBar**: Tracks the "Selected Model" from the "Quick Menu". It uses `workspaceState` to remember which model you want to focus on in the bottom bar.
+The UI uses the `VS Code Tree Data Provider` API and Custom Status Bar items:
+- **QuotaProvider**: Dynamically builds the sidebar. It uses **Native Codicons** (`pass-filled`, `warning`, etc.) to match the VS Code aesthetic. The information hierarchy puts the percentage first for quick scanning.
+- **StatusBar**: Implements **Rich Markdown Tooltips**. Instead of simple text, it renders a multi-line dashboard showing the top 5 models of the active account.
+- **Quick Menu**: Uses `workspaceState` to synchronize with the Status Bar, ensuring that selecting a model in the menu immediately updates the bottom bar display.

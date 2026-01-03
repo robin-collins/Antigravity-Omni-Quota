@@ -7,7 +7,7 @@ The "Brain" of the project.
 - **`activate()`**: Entry point. Sets up the command registrations and starts the polling intervals.
 - **`runCheck()`**: The main workflow. Orchestrates the scan, fetches data, updates the manager, and refreshes the UI.
 - **`updateAllAccountsTimes()`**: The logic specifically designed to keep countdowns accurate across all accounts in the sidebar.
-- **`updateStatusBar()`**: Manages the bottom bar, including the "Selected Model" memory.
+- **`updateStatusBar()`**: Manages the bottom bar. It handles **Rich Markdown Tooltips**, rich dashboard summaries, and respects the `selectedModel` preference.
 
 ### `src/accountManager.ts`
 The "Database" interface.
