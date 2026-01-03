@@ -2,6 +2,12 @@
 
 All notable changes to the **Antigravity Omni-Quota** extension will be documented in this file.
 
+## [1.0.4] - 2026-01-03
+
+### Improved
+- **Startup Speed**: Optimized the activation sequence to perform an immediate data fetch and time calculation. Data now appearing as soon as the extension finishes activating, eliminating the initial 15-30 second wait.
+- **Activation Lifecycle**: Refined the extension lifecycle to ensure all providers are fully synchronized before the UI is presented.
+
 ## [1.0.3] - 2026-01-03
 
 ### Fixed

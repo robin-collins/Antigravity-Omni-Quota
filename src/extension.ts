@@ -62,7 +62,12 @@ export async function activate(context: vscode.ExtensionContext) {
          
          // Force cleanup of invalid accounts on startup
          await accountManager.cleanupInvalidAccounts();
-         runCheck(quotaService, quotaProvider, accountManager, statusBarItem, treeView, context);
+         
+         // Initial check - awaited to ensure data is fetched before finishing activation
+         await runCheck(quotaService, quotaProvider, accountManager, statusBarItem, treeView, context);
+         
+         // Ensure relative times are calculated immediately
+         await updateAllAccountsTimes(accountManager, quotaProvider, treeView);
      } else {
          // If monitoring is disabled, show connected status
          updateStatusBar(statusBarItem, {
