@@ -334,13 +334,14 @@ async function runCheck(
                 let models: any[] = [];
                 let realName = "Usuario";
                 let userId = 'unknown';
+                let userEmail = '';  // Store email for account display
 
                 if (status && status.userStatus) {
                         realName = status.userStatus.name || realName;
-                        const email = status.userStatus.email || '';
-                        userId = `${conn.initialData?.context?.properties?.installationId || 'unknown'}_${email || realName}`;
+                        userEmail = status.userStatus.email || '';
+                        userId = `${conn.initialData?.context?.properties?.installationId || 'unknown'}_${userEmail || realName}`;
                         
-                        console.log(`[Omni-Quota] Found account: "${realName}" (Email: ${email || 'N/A'}) on port ${conn.port}`);
+                        console.log(`[Omni-Quota] Found account: "${realName}" (Email: ${userEmail || 'N/A'}) on port ${conn.port}`);
 
                         let configData = status.userStatus.cascadeModelConfigData;
                         if (!configData && status.userStatus.planStatus) {
@@ -402,16 +403,9 @@ async function runCheck(
                         }
                 }
 
-                // Validate account data before creating account
-                const isValidAccount = realName &&
-                    realName !== 'undefined' &&
-                    realName !== 'account' &&
-                    realName.trim().length > 0 &&
-                    realName !== 'Usuario' &&
-                    models && models.length > 0;
-
-                if (!isValidAccount) {
-                    console.log(`[Omni-Quota] Skipped invalid account for PID ${conn.pid}: name="${realName}", models=${models?.length || 0}`);
+                // Basic data check - let accountManager handle full validation
+                if (!realName || !models || models.length === 0) {
+                    console.log(`[Omni-Quota] No valid data from API for PID ${conn.pid}: name="${realName}", models=${models?.length || 0}`);
                     continue;
                 }
 
@@ -419,6 +413,7 @@ async function runCheck(
                 const success = await accountManager.updateAccount(userId, {
                     id: userId,
                     displayName: realName,
+                    email: userEmail || undefined,  // Store email for display in account list
                     lastActive: Date.now(),
                     quota: quota,
                     models: models,
@@ -427,10 +422,16 @@ async function runCheck(
                 });
                 if (success) {
                     console.log(`[Omni-Quota] Account "${realName}" persisted to globalState.`);
-                }
-                if (!success) {
-                    console.log(`[Omni-Quota] Skipped adding account ${userId} due to limit`);
-                    vscode.window.showWarningMessage(getTranslation('accountLimitReached', language));
+                } else {
+                    // Determine actual failure reason
+                    const accounts = accountManager.getAccounts();
+                    const maxAccounts = config.get<number>('maxAccounts', 10);
+                    if (accounts.length >= maxAccounts) {
+                        console.log(`[Omni-Quota] Account limit reached (${maxAccounts}), cannot add "${realName}"`);
+                        vscode.window.showWarningMessage(getTranslation('accountLimitReached', language));
+                    } else {
+                        console.log(`[Omni-Quota] Account validation failed for "${realName}" - see validation error above`);
+                    }
                     continue;
                 }
 
@@ -503,10 +504,11 @@ export async function forceRefresh(
     context: vscode.ExtensionContext
 ) {
     console.log('[Omni-Quota] Force refresh initiated');
-    
-    // Clear cache to force fresh data
+
+    // Clear caches to force fresh data
     lastCheckTime = 0;
-    
+    service.invalidateAuthCache(); // Clear stale auth token (helps when user switches accounts)
+
     // Clean up invalid accounts before refresh
     await accountManager.cleanupInvalidAccounts();
     

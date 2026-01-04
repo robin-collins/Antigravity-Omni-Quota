@@ -2,8 +2,8 @@
   "name": "antigravity-omni-quota",
   "displayName": "Antigravity Omni-Quota",
   "description": "A VS Code extension for managing Omni Quota accounts",
-  "version": "1.0.5",
-  "publisher": "RicardoGurrola15",
+  "version": "1.0.6",
+  "publisher": "robin-collins",
   "icon": "icon.png",
   "engines": {
     "vscode": "^1.75.0"
@@ -24,15 +24,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/RicardoGurrola15/Antigravity-Omni-Quota.git"
+    "url": "https://github.com/robin-collins/Antigravity-Omni-Quota.git"
   },
   "bugs": {
-    "url": "https://github.com/RicardoGurrola15/Antigravity-Omni-Quota/issues"
+    "url": "https://github.com/robin-collins/Antigravity-Omni-Quota/issues"
   },
-  "homepage": "https://github.com/RicardoGurrola15/Antigravity-Omni-Quota#readme",
+  "homepage": "https://github.com/robin-collins/Antigravity-Omni-Quota#readme",
   "activationEvents": [
-    "onStartupFinished",
-    "onView:quotaExplorer"
+    "onStartupFinished"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -147,6 +146,13 @@
           "type": "boolean",
           "default": false,
           "description": "Show only models with quota below warning threshold in status bar and tree"
+        },
+        "antigravity-quota.maxAccounts": {
+          "type": "number",
+          "default": 10,
+          "minimum": 1,
+          "maximum": 50,
+          "description": "Maximum number of accounts allowed"
         },
         "antigravity-quota.autoRefreshOnFocus": {
           "type": "boolean",
