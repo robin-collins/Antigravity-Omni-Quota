@@ -1,89 +1,63 @@
 # 🌌 Antigravity Omni-Quota
-[![Support](https://img.shields.io/badge/Support-PayPal-blue.svg)](https://paypal.me/RicardoGurrola146)
 
-A professional VS Code extension designed to monitor and manage your Gemini models' quota within the **Antigravity ecosystem**.
+[![Version](https://img.shields.io/badge/version-1.1.1-blue.svg)](https://github.com/RicardoGurrola15/Antigravity-Omni-Quota)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Support](https://img.shields.io/badge/Support-PayPal-orange.svg)](https://paypal.me/RicardoGurrola146)
+
+**Antigravity Omni-Quota** is a high-performance VS Code extension designed to provide a unified, secure, and multi-platform dashboard for monitoring Antigravity AI quotas. 
 
 Unlike standard tools that only show the current session, **Omni-Quota** acts as a central hub for all your accounts, allowing you to track quotas, remaining credits, and reset periods across multiple identities in a single interface.
 
 ---
 
+## 🌟 What's New in v1.1.1 (Universal Edition)
+
+- **🌍 Full Cross-Platform Support**: Native compatibility with **Windows**, **macOS**, and **Linux** (including WSL).
+- **🛡️ Secure Storage Engine**: Sensitive CSRF tokens are now protected using the VS Code `SecretStorage` (system keychain). No more plaintext tokens.
+- **📈 Usage History**: Background recording of quota snapshots. Ready for the upcoming analytics dashboard in v1.2.0.
+- **🩺 Proactive Diagnostics**: Automatic detection of missing system tools (like `lsof`) with guided repair for Unix users.
+
+---
+
 ## 🚀 Key Features
-## 🌟 Key Features
 
 - **🚀 Zero-Config Discovery**: Automatic detection of Antigravity's internal API port and CSRF token.
-- **🌍 Universal Support**: Native compatibility with **Windows**, **macOS**, and **Linux** (including WSL).
-- **🛡️ Secure Storage**: Protects your session tokens using the VS Code `SecretStorage` (system keychain).
-- **📊 Professional Dashboard**: High-fidelity tooltips showing up to 8 models with health colors.
-- **🕒 Accurate Countdown**: Real-time relative clock updates (every 10s) optimized for the Antigravity reset cycle.
-- **📈 Usage History**: Background tracking of your token consumption (ready for future analytics).
-
-## 💻 Multi-Platform Requirements
-
-- **Windows**: No additional steps required.
-- **macOS / Linux**: Requires `lsof` (standard on most systems). The extension will guide you if it's missing.
-
 - **🔗 Multi-Account Hub**: Store and monitor all your Antigravity accounts simultaneously. No more logging in and out just to check your limits.
   ![Multi-Account Panel](media/panelmultiaccounts.png)
 
-- **🎨 Visual Health Indicators**: Dynamic color-coded icons (Green, Yellow, Orange, Red) in the sidebar to understand your quota health at a glance.
-- **⏲️ High-Accuracy Countdowns**: Real-time reset timers and optimized polling for immediate quota updates.
-- **📊 Quick Menu Access**: A sleek status bar integration with a "Quick Pick" menu to quickly switch focus between models and view granular details.
+- **📊 Professional Dashboard**: High-fidelity status bar tooltips showing up to **8 models** with health colors.
+  ![Mini Dashboard Tooltip](media/minidash.png)
+
+- **🎨 Visual Health Indicators**: Dynamic color-coded icons (Green, Yellow, Orange, Red) in the sidebar.
+- **🕒 Accurate Countdowns**: Real-time relative clock updates (every 10s) optimized for the Antigravity reset cycle.
+- **📊 Quick Menu Access**: Sleek integration to quickly switch focus between models.
   ![Quick Menu](media/quickmenu.png)
 
-- **🌍 Global Localization**: Fully translated into **8+ languages**, including English, Español, Русский, 中文, 한국어, 日本語, Français, and Deutsch.
+- **🌍 Global Localization**: Fully translated into **8+ languages**: English, Español, Русский, 中文, 한국어, 日本語, Français, and Deutsch.
   ![Language Support](media/Languages.png)
-- **💾 Persistent State**: Your accounts are safely stored in VS Code's global storage, ensuring they are there every time you open your editor.
 
 ---
 
-## 🛠️ Technical Highlights
+## 💻 System Requirements
 
-- **Intelligent Bootstrapping**: Automatically repairs legacy account data to ensure accurate countdowns.
-- **Optimized Performance**: Dual-interval polling system (Fast UI updates vs. full system scans) ensures low CPU usage.
-- **Process Discovery**: Cross-platform logic (Windows/Unix) for robust port detection and API communication.
-
-For a deeper dive into how this works, check out our [Technical Architecture](./docs/TECHNICAL_ARCHITECTURE.md).
+- **Windows**: No additional steps required (uses PowerShell).
+- **macOS / Linux / WSL**: Requires `lsof` (standard on most systems). The extension will guide you if it's missing.
 
 ---
 
-## 📂 Documentation
+## 💖 Support the Development
 
-Detailed documentation is available in the `docs/` folder:
-- [**Overview & Benefits**](./docs/OVERVIEW.md) - Why use Omni-Quota?
-- [**Technical Architecture**](./docs/TECHNICAL_ARCHITECTURE.md) - Deep dive into scanning and persistence.
-- [**File Breakdown**](./docs/FILE_BREAKDOWN.md) - Guide for developers on the source code structure.
+This extension is developed and maintained for free. if Omni-Quota has saved you time or frustration, consider supporting its development:
 
----
+👉 **[Donate via PayPal](https://paypal.me/RicardoGurrola146)**
 
-## 📥 Installation & Setup
-
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/RicardoGurrola15/Antigravity-Omni-Quota.git
-   ```
-2. **Install dependencies**:
-   ```bash
-   npm install
-   ```
-3. **Compile**:
-   ```bash
-   npm run compile
-   ```
-4. **Run**:
-   Open the project in VS Code and press `F5` to launch a new Extension Development Host window.
-
----
-
-## ⚙️ Configuration
-
-Customize the extension to your workflow via **Settings > Extensions > Antigravity Omni-Quota**:
-- Change the interface **Language**.
-- Adjust **Polling Intervals** to balance frequency and performance.
-- Set **Warning & Critical Thresholds** for visual cues.
-- Toggle visibility for specific models (Pro, Flash, etc.).
+Your support helps maintain the project and fuels the development of new features like the upcoming Consumption Analytics (v1.2.0).
 
 ---
 
 ## 📄 License
 
-This project is licensed under the MIT License.
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+---
+*Developed for the Antigravity community.*
