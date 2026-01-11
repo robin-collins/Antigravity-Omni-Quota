@@ -127,17 +127,33 @@ function registerCommands(
                     };
                 });
 
-                const selection = await vscode.window.showQuickPick(items, {
-                    placeHolder: getTranslation('selectModelToMonitor', config.get('language', 'auto'))
+                // Add Support item
+                items.push({ label: '', description: '', model: null } as any); // Separator
+                items.push({
+                    label: `$(heart) ${getTranslation('supportTitle', config.get('language', 'auto'))}`,
+                    description: 'paypal.me/RicardoGurrola146',
+                    model: { name: 'SUPPORT_ACTION' }
                 });
 
-                if (selection) {
+                const selection = await vscode.window.showQuickPick(items, {
+                    placeHolder: getTranslation('selectModelToMonitor', config.get('language', 'auto'))
+                }) as any;
+
+                if (selection && selection.model) {
+                    if (selection.model.name === 'SUPPORT_ACTION') {
+                        vscode.env.openExternal(vscode.Uri.parse('https://paypal.me/RicardoGurrola146'));
+                        return;
+                    }
                     context.workspaceState.update('selectedModel', selection.model.name);
                     updateStatusBar(statusBarItem, lastCalculatedData, context);
                 }
             } else {
+                const config = vscode.workspace.getConfiguration('antigravity-quota');
                 vscode.window.showInformationMessage(getTranslation('waitingForAntigravity', config.get('language', 'auto')));
             }
+        }),
+        vscode.commands.registerCommand('antigravity-quota.support', () => {
+             vscode.env.openExternal(vscode.Uri.parse('https://paypal.me/RicardoGurrola146'));
         }),
         vscode.commands.registerCommand('antigravity-quota.clearAccounts', async () => {
             const config = vscode.workspace.getConfiguration('antigravity-quota');

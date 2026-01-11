@@ -1,6 +1,7 @@
 # 🌌 Antigravity Omni-Quota
+[![Support](https://img.shields.io/badge/Support-PayPal-blue.svg)](https://paypal.me/RicardoGurrola146)
 
-**Antigravity Omni-Quota** is a high-performance VS Code extension designed to provide a unified, persistent, and multi-language dashboard for monitoring Antigravity AI quotas. 
+A professional VS Code extension designed to monitor and manage your Gemini models' quota within the **Antigravity ecosystem**.
 
 Unlike standard tools that only show the current session, **Omni-Quota** acts as a central hub for all your accounts, allowing you to track quotas, remaining credits, and reset periods across multiple identities in a single interface.
 

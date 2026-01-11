@@ -8,6 +8,10 @@
   "engines": {
     "vscode": "^1.75.0"
   },
+  "funding": {
+    "type": "paypal",
+    "url": "https://paypal.me/RicardoGurrola146"
+  },
   "categories": [
     "Machine Learning",
     "Visualization",
@@ -36,6 +40,10 @@
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
+      {
+        "command": "antigravity-quota.support",
+        "title": "Support development"
+      },
       {
         "command": "antigravity-quota.focus",
         "title": "Show Quota Panel"
