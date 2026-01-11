@@ -2,7 +2,7 @@
 
 All notable changes to the **Antigravity Omni-Quota** extension will be documented in this file.
 
-## [1.1.0] - 2026-01-10
+## [1.0.6] - 2026-01-10
 
 ### Fixed
 - **Confusing Ready State**: Models that are ready to use no longer show "0%" or an "X" icon. They now correctly display "100%" and a green checkmark.

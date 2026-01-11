@@ -12,10 +12,11 @@ Unlike standard tools that only show the current session, **Omni-Quota** acts as
   ![Multi-Account Panel](media/panelmultiaccounts.png)
 
 - **⚡ Zero-Config Scanning**: Automatically detects active Antigravity language server processes on your system.
-- **✨ Premium UI & Rich Tooltips**: Multi-line status bar dashboard showing all your models at once with native VS Code styling.
+- **✨ Premium UI & Rich Tooltips**: Multi-line status bar dashboard showing up to **8 models** at once with native VS Code styling.
   ![Mini Dashboard Tooltip](media/minidash.png)
 
-- **⏲️ Real-Time Reset Countdowns**: Accurate, client-side timers that track when your quotas will reset (e.g., "resets in 2h 15m").
+- **🎨 Visual Health Indicators**: Dynamic color-coded icons (Green, Yellow, Orange, Red) in the sidebar to understand your quota health at a glance.
+- **⏲️ High-Accuracy Countdowns**: Real-time reset timers and optimized polling for immediate quota updates.
 - **📊 Quick Menu Access**: A sleek status bar integration with a "Quick Pick" menu to quickly switch focus between models and view granular details.
   ![Quick Menu](media/quickmenu.png)
 
