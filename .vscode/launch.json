@@ -30,6 +30,19 @@
                 "${workspaceFolder}/out/test/**/*.js"
             ],
             "preLaunchTask": "${defaultBuildTask}"
+        },
+        {
+            "name": "Test Unix Parser (Mock)",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/testUnixParsing.ts",
+            "outFiles": [
+                "${workspaceFolder}/dist/**/*.js"
+            ],
+            "runtimeArgs": [
+                "-r",
+                "ts-node/register"
+            ]
         }
     ]
 }

@@ -2,7 +2,7 @@
   "name": "antigravity-omni-quota",
   "displayName": "Antigravity Omni-Quota",
   "description": "A VS Code extension for managing Omni Quota accounts",
-  "version": "1.0.6",
+  "version": "1.1.0",
   "publisher": "RicardoGurrola15",
   "icon": "icon.png",
   "engines": {
@@ -185,6 +185,7 @@
     "@types/vscode": "^1.75.0",
     "axios": "^1.13.2",
     "esbuild": "^0.27.2",
+    "ts-node": "^10.9.2",
     "typescript": "^4.9.5"
   }
 }

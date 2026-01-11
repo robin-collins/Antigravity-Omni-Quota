@@ -7,13 +7,22 @@ Unlike standard tools that only show the current session, **Omni-Quota** acts as
 ---
 
 ## 🚀 Key Features
+## 🌟 Key Features
+
+- **🚀 Zero-Config Discovery**: Automatic detection of Antigravity's internal API port and CSRF token.
+- **🌍 Universal Support**: Native compatibility with **Windows**, **macOS**, and **Linux** (including WSL).
+- **🛡️ Secure Storage**: Protects your session tokens using the VS Code `SecretStorage` (system keychain).
+- **📊 Professional Dashboard**: High-fidelity tooltips showing up to 8 models with health colors.
+- **🕒 Accurate Countdown**: Real-time relative clock updates (every 10s) optimized for the Antigravity reset cycle.
+- **📈 Usage History**: Background tracking of your token consumption (ready for future analytics).
+
+## 💻 Multi-Platform Requirements
+
+- **Windows**: No additional steps required.
+- **macOS / Linux**: Requires `lsof` (standard on most systems). The extension will guide you if it's missing.
 
 - **🔗 Multi-Account Hub**: Store and monitor all your Antigravity accounts simultaneously. No more logging in and out just to check your limits.
   ![Multi-Account Panel](media/panelmultiaccounts.png)
-
-- **⚡ Zero-Config Scanning**: Automatically detects active Antigravity language server processes on your system.
-- **✨ Premium UI & Rich Tooltips**: Multi-line status bar dashboard showing up to **8 models** at once with native VS Code styling.
-  ![Mini Dashboard Tooltip](media/minidash.png)
 
 - **🎨 Visual Health Indicators**: Dynamic color-coded icons (Green, Yellow, Orange, Red) in the sidebar to understand your quota health at a glance.
 - **⏲️ High-Accuracy Countdowns**: Real-time reset timers and optimized polling for immediate quota updates.

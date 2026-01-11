@@ -2,12 +2,16 @@
 import { exec } from 'child_process';
 import axios from 'axios';
 import * as https from 'https';
+import * as os from 'os';
+import * as path from 'path';
+import * as fs from 'fs';
+import * as vscode from 'vscode';
 
 export interface ServerInfo {
     pid: string;
-    port: string;       // El puerto ganador
+    port: string;       
     csrfToken: string;
-    initialData?: any;  // Los datos que obtuvimos al probar el puerto
+    initialData?: any;  
 }
 
 export class QuotaService {
@@ -18,7 +22,6 @@ export class QuotaService {
         return new Promise((resolve) => {
             exec(cmd, { maxBuffer: 1024 * 1024, timeout: 5000 }, (error, stdout) => {
                 if (error) {
-                    // console.warn(`[Omni-Quota] Exec Warn: ${error.message}`);
                     resolve(''); 
                 } else {
                     resolve(stdout);
@@ -27,20 +30,24 @@ export class QuotaService {
         });
     }
 
-    /**
-     * "Zero-Config" Strategy:
-     * 1. Find ALL language_server processes.
-     * 2. For each process, find ALL listening ports.
-     * 3. PROBE each port until one responds to GetUnleashData.
-     */
     public async detectAllActiveConnections(): Promise<ServerInfo[]> {
-        console.log('[Omni-Quota] Starting Zero-Config Scan...');
-        const successfulConnections: ServerInfo[] = [];
+        const platform = os.platform();
+        console.log(`[Omni-Quota] Starting Zero-Config Scan on ${platform}...`);
+        
+        if (platform === 'win32') {
+            return this.detectWindows();
+        } else if (platform === 'darwin' || platform === 'linux') {
+            return this.detectUnix();
+        } else {
+            console.error(`[Omni-Quota] Unsupported platform: ${platform}`);
+            return [];
+        }
+    }
 
-        // Pre-load Auth Token for Identity
+    private async detectWindows(): Promise<ServerInfo[]> {
+        const successfulConnections: ServerInfo[] = [];
         const authToken = this.getAuthTokenFromDisk();
 
-        // 1. PowerShell Discovery (All Processes)
         const psCommand = `powershell -NoProfile -Command "Get-CimInstance Win32_Process -Filter \\"Name like '%language_server_windows%'\\" | Select-Object ProcessId, CommandLine | ConvertTo-Json"`;
         const psOut = await this.execShell(psCommand);
         
@@ -49,73 +56,105 @@ export class QuotaService {
         let processes: any[] = [];
         try {
             const parsed = JSON.parse(psOut.trim());
-            if (Array.isArray(parsed)) processes = parsed;
-            else if (parsed && typeof parsed === 'object') processes = [parsed];
+            processes = Array.isArray(parsed) ? parsed : [parsed];
         } catch (e) { return []; }
 
-        // 2. Process Iteration
         for (const proc of processes) {
             const cmdLine = proc.CommandLine || '';
             const pid = proc.ProcessId;
-            
             if (!cmdLine || !pid) continue;
 
             const tokenMatch = cmdLine.match(/--csrf_token[\s=]+([^\s]+)/);
             if (!tokenMatch) continue;
-
             const token = tokenMatch[1].replace(/['"]+/g, '').trim();
 
-            // 3. Find Ports for this PID
             const netstatCmd = `netstat -ano | findstr ${pid}`;
             const nsOut = await this.execShell(netstatCmd);
-            
             const candidatePorts: string[] = [];
-            const lines = nsOut.trim().split(/\r?\n/);
-            lines.forEach(line => {
+            nsOut.trim().split(/\r?\n/).forEach(line => {
                 if (line.includes('LISTENING')) {
                     const parts = line.trim().split(/\s+/);
-                    if (parts.length >= 2) {
-                        const portStr = parts[1].split(':').pop();
-                        if (portStr && !isNaN(Number(portStr))) {
-                            candidatePorts.push(portStr);
-                        }
-                    }
+                    const portStr = parts[1]?.split(':').pop();
+                    if (portStr && !isNaN(Number(portStr))) candidatePorts.push(portStr);
                 }
             });
 
-            // unique ports
-            const uniquePorts = [...new Set(candidatePorts)];
-            
-            // 4. PROBE PORTS (Find the API port)
-            for (const port of uniquePorts) {
-                // console.log(`[Omni-Quota] Probing PID ${pid} on port ${port}...`);
+            for (const port of [...new Set(candidatePorts)]) {
                 const result = await this.probePort(port, token, authToken);
                 if (result) {
-                    console.log(`[Omni-Quota] SUCCESS: PID ${pid} responding on port ${port}`);
-                    successfulConnections.push({
-                        pid: pid.toString(),
-                        port: port,
-                        csrfToken: token,
-                        initialData: result
-                    });
-                    break; // Found the API port for this process, move to next process
+                    successfulConnections.push({ pid: pid.toString(), port, csrfToken: token, initialData: result });
+                    break;
                 }
             }
         }
-
         return successfulConnections;
     }
 
-    /**
-     * Sends a quick GetUnleashData request to check if this is the API port.
-     */
+    private async detectUnix(): Promise<ServerInfo[]> {
+        const successfulConnections: ServerInfo[] = [];
+        const authToken = this.getAuthTokenFromDisk();
+
+        // Check if 'lsof' is available - CRITICAL for Unix detection
+        const hasLsof = await this.execShell('which lsof');
+        if (!hasLsof.trim()) {
+            console.error('[Omni-Quota] CRITICAL: "lsof" command not found. This is required for macOS/Linux port detection.');
+            // We return a special marker to notify the extension to show a message
+            vscode.window.showErrorMessage(
+                'Antigravity Omni-Quota: "lsof" is required on macOS/Linux. Please install it (e.g., sudo apt install lsof).',
+                'How to fix?'
+            ).then(selection => {
+                if (selection === 'How to fix?') {
+                    vscode.env.openExternal(vscode.Uri.parse('https://github.com/RicardoGurrola15/Antigravity-Omni-Quota#macoslinux-setup'));
+                }
+            });
+            return [];
+        }
+
+        // Detect language_server processes on Unix
+        const psCommand = `ps -ef | grep language_server | grep -v grep`;
+        const psOut = await this.execShell(psCommand);
+        if (!psOut.trim()) return [];
+
+        const lines = psOut.trim().split(/\r?\n/);
+        for (const line of lines) {
+            const parts = line.trim().split(/\s+/);
+            const pid = parts[1];
+            
+            // Validate PID is numeric
+            if (!pid || isNaN(Number(pid))) continue;
+
+            const tokenMatch = line.match(/--csrf_token[\s=]+([^\s]+)/);
+            if (!tokenMatch) continue;
+            const token = tokenMatch[1].replace(/['"]+/g, '').trim();
+
+            // Find ports using lsof
+            const lsofCmd = `lsof -nP -iTCP -sTCP:LISTEN -a -p ${pid}`;
+            const lsofOut = await this.execShell(lsofCmd);
+            const candidatePorts: string[] = [];
+            
+            lsofOut.trim().split(/\r?\n/).forEach(l => {
+                const portMatch = l.match(/:(\d+)\s+\(LISTEN\)/);
+                if (portMatch) candidatePorts.push(portMatch[1]);
+            });
+
+            for (const port of [...new Set(candidatePorts)]) {
+                const result = await this.probePort(port, token, authToken);
+                if (result) {
+                    successfulConnections.push({ pid, port, csrfToken: token, initialData: result });
+                    break;
+                }
+            }
+        }
+        return successfulConnections;
+    }
+
     private async probePort(port: string, csrfToken: string, authToken: string | null): Promise<any> {
         const url = `https://127.0.0.1:${port}/exa.language_server_pb.LanguageServerService/GetUnleashData`;
         const payload = {
             metadata: {
                 api_key: authToken || '00000000-0000-0000-0000-000000000000',
                 extension_name: 'vscode',
-                extension_version: '1.2.3',
+                extension_version: '1.1.0',
                 ide_name: 'visual_studio_code',
                 ide_version: '1.75.0',
                 session_id: '00000000-0000-0000-0000-000000000000'
@@ -123,33 +162,20 @@ export class QuotaService {
         };
 
         const agent = new https.Agent({ rejectUnauthorized: false, keepAlive: true });
-        
         const headers: any = {
             'Content-Type': 'application/json',
             'x-codeium-csrf-token': csrfToken,
             'Connection': 'close'
         };
 
-        if (authToken) {
-            headers['Authorization'] = `Bearer ${authToken}`;
-        } else {
-            headers['Authorization'] = `Basic ${csrfToken}`;
-        }
+        headers['Authorization'] = authToken ? `Bearer ${authToken}` : `Basic ${csrfToken}`;
 
-        // Minimal config for speed
-        const config = {
-            headers: headers,
-            httpsAgent: agent,
-            timeout: 1500 // Quick timeout for probing
-        };
+        const config = { headers, httpsAgent: agent, timeout: 1500 };
 
         try {
             const res = await axios.post(url, payload, config);
-            if (res.status === 200 && res.data) {
-                return res.data;
-            }
+            if (res.status === 200 && res.data) return res.data;
         } catch (e: any) {
-            // Check for HTTP fallback requirement
             if (e.code === 'EPROTO' || e.response?.status === 403) {
                  try {
                     const httpUrl = `http://127.0.0.1:${port}/exa.language_server_pb.LanguageServerService/GetUnleashData`;
@@ -161,46 +187,20 @@ export class QuotaService {
         return null;
     }
 
-    // 2. COMPLEX: Quota Check (GetUserStatus)
     public async fetchStatus(server: ServerInfo): Promise<any> {
-        const csrfToken = server.csrfToken;
-        const sessionId = 'vscode-omni-quota-session';
-
-        // Ensure client is initialized by calling GetUnleashData
-        const unleashUrl = `https://127.0.0.1:${server.port}/exa.language_server_pb.LanguageServerService/GetUnleashData`;
-        const unleashPayload = {
-            metadata: {
-                api_key: '00000000-0000-0000-0000-000000000000',
-                extension_name: 'vscode',
-                extension_version: '1.2.3',
-                ide_name: 'visual_studio_code',
-                ide_version: '1.75.0',
-                session_id: sessionId
-            }
-        };
-        await this.doPost(unleashUrl, unleashPayload, server);
-
         const url = `https://127.0.0.1:${server.port}/exa.language_server_pb.LanguageServerService/GetUserStatus`;
         const payload = {
-            metadata: {
-                ideName: 'vscode',
-                extensionName: 'vscode',
-                ideVersion: '1.75.0',
-                locale: 'en'
-            }
+            metadata: { ideName: 'vscode', extensionName: 'vscode', ideVersion: '1.75.0', locale: 'en' }
         };
         
-        // Use csrfToken for auth
         const agent = new https.Agent({ rejectUnauthorized: false, keepAlive: true });
-        const headers: any = {
-            'Content-Type': 'application/json',
-            'x-codeium-csrf-token': csrfToken,
-            'Authorization': `Basic ${csrfToken}`,
-            'Connection': 'close'
-        };
-
         const config = {
-            headers: headers,
+            headers: {
+                'Content-Type': 'application/json',
+                'x-codeium-csrf-token': server.csrfToken,
+                'Authorization': `Basic ${server.csrfToken}`,
+                'Connection': 'close'
+            },
             httpsAgent: agent,
             timeout: 3000
         };
@@ -218,51 +218,15 @@ export class QuotaService {
         }
     }
 
-    // Reuse existing fetch logic for heavy calls if needed
-    public async fetchModelStatuses(server: ServerInfo): Promise<any> {
-        const url = `https://127.0.0.1:${server.port}/exa.language_server_pb.LanguageServerService/GetModelStatuses`;
-        const payload = { metadata: { api_key: '00000000-0000-0000-0000-000000000000', extension_name: 'vscode', ide_name: 'visual_studio_code' } };
-        
-        return this.doPost(url, payload, server);
-    }
-    
-    // Helper used by fetchModelStatuses
-    private async doPost(url: string, payload: any, server: ServerInfo): Promise<any> {
-        const agent = new https.Agent({ rejectUnauthorized: false, keepAlive: true });
-        const config = {
-            headers: {
-                'Content-Type': 'application/json',
-                'x-codeium-csrf-token': server.csrfToken,
-                'Authorization': `Basic ${server.csrfToken}`,
-                'Connection': 'close'
-            },
-            httpsAgent: agent,
-            timeout: 3000
-        };
-        try {
-            const res = await axios.post(url, payload, config);
-            return res.data;
-        } catch (e: any) {
-             if (e.code === 'EPROTO' || e.response?.status === 403) {
-                 const httpUrl = url.replace('https://', 'http://');
-                 const res2 = await axios.post(httpUrl, payload, { ...config, httpsAgent: undefined });
-                 return res2.data;
-             }
-             throw e;
-        }
-    }
-
     public getAuthTokenFromDisk(): string | null {
         const now = Date.now();
-        if (this.cachedAuthToken && (now - this.tokenCacheTime) < 60000) { // Cache for 1 minute
-            return this.cachedAuthToken;
-        }
+        if (this.cachedAuthToken && (now - this.tokenCacheTime) < 60000) return this.cachedAuthToken;
+        
         try {
-            const fs = require('fs');
-            const home = process.env.USERPROFILE || process.env.HOME || '';
-            const path = `${home}\\.gemini\\oauth_creds.json`;
-            if (fs.existsSync(path)) {
-                const content = fs.readFileSync(path, 'utf8');
+            const home = os.homedir();
+            const filePath = path.join(home, '.gemini', 'oauth_creds.json');
+            if (fs.existsSync(filePath)) {
+                const content = fs.readFileSync(filePath, 'utf8');
                 const json = JSON.parse(content);
                 this.cachedAuthToken = json.access_token || null;
                 this.tokenCacheTime = now;
@@ -274,10 +238,9 @@ export class QuotaService {
 
     public getInstallationIdFromDisk(): string | null {
         try {
-           const fs = require('fs');
-           const home = process.env.USERPROFILE || process.env.HOME || '';
-           const path = `${home}\\.gemini\\antigravity\\installation_id`;
-           if (fs.existsSync(path)) return fs.readFileSync(path, 'utf8').trim();
+           const home = os.homedir();
+           const filePath = path.join(home, '.gemini', 'antigravity', 'installation_id');
+           if (fs.existsSync(filePath)) return fs.readFileSync(filePath, 'utf8').trim();
        } catch (e) { }
        return null;
    }

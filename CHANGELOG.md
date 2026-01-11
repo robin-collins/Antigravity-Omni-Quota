@@ -2,6 +2,13 @@
 
 All notable changes to the **Antigravity Omni-Quota** extension will be documented in this file.
 
+## [1.1.0] - 2026-01-10
+### Added
+- **Universal Support**: Full compatibility with macOS and Linux (via `ps` and `lsof`).
+- **SecretStorage Integration**: Sensitive tokens (CSRF) are now securely stored in the system keychain.
+- **Usage History Engine**: Background recording of quota snapshots for future analytics.
+- **Proactive Diagnostics**: Automatic detection of missing tools on Unix-like systems with guided repair.
+
 ## [1.0.6] - 2026-01-10
 
 ### Fixed
