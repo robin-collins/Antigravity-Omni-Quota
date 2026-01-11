@@ -2,6 +2,16 @@
 
 All notable changes to the **Antigravity Omni-Quota** extension will be documented in this file.
 
+## [1.1.0] - 2026-01-10
+
+### Fixed
+- **Confusing Ready State**: Models that are ready to use no longer show "0%" or an "X" icon. They now correctly display "100%" and a green checkmark.
+- **Quota Accuracy**: Doubled the polling frequency and optimized internal checks to ensure quota changes are reflected much faster.
+
+### Added
+- **Dynamic Sidebar Colors**: Icons in the sidebar now use colors (Green, Yellow, Orange, Red) to indicate the health of each model's quota at a glance.
+- **Expanded Dashboard**: The status bar tooltip now shows up to **8 models** simultaneously (previously 5).
+
 ## [1.0.5] - 2026-01-03
 
 ### Added

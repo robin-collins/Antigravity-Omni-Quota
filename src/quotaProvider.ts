@@ -84,21 +84,39 @@ export class QuotaProvider implements vscode.TreeDataProvider<QuotaItem> {
                     // Unified dots: empty is thinner or different character? No, let's stick to circles but with color icons
                     const dots = '●'.repeat(Math.round((mPct / 100) * 5)) + '○'.repeat(5 - Math.round((mPct / 100) * 5));
                     
-                    // Native VS Code icons for status
+                    const isReady = m.resetTime === getTranslation('ready', lang);
+                    
+                    // Native VS Code icons for status with Colors
                     let icon = 'circle-outline';
-                    if (mPct >= warningThreshold) icon = 'pass-filled';
-                    else if (mPct >= criticalThreshold) icon = 'info';
-                    else if (mPct > 0) icon = 'warning';
-                    else icon = 'error';
+                    let color: string | undefined;
+                    
+                    if (isReady) {
+                        icon = 'pass-filled';
+                        color = 'charts.green';
+                    } else if (mPct >= warningThreshold) {
+                        icon = 'pass-filled';
+                        color = 'charts.green';
+                    } else if (mPct >= criticalThreshold) {
+                        icon = 'info';
+                        color = 'charts.yellow';
+                    } else if (mPct > 0) {
+                        icon = 'warning';
+                        color = 'charts.orange';
+                    } else {
+                        icon = 'error';
+                        color = 'charts.red';
+                    }
 
                     const resetInfo = m.resetTime ? ` [${m.resetTime}]` : '';
-                    items.push(new QuotaItem(
+                    const item = new QuotaItem(
                         `${mName}`,
                         vscode.TreeItemCollapsibleState.None,
                         icon,
                         undefined,
-                        `${mPct}% ${dots}${resetInfo}`
-                    ));
+                        isReady ? `100% ${dots} [${getTranslation('ready', lang)}]` : `${mPct}% ${dots}${resetInfo}`,
+                        color
+                    );
+                    items.push(item);
                 });
             } else {
                 const noModelText = getTranslation('noModelInfo', lang);
@@ -131,14 +149,19 @@ class QuotaItem extends vscode.TreeItem {
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
         public readonly iconName?: string,
         public readonly account?: AccountData,
-        public readonly description?: string
+        public readonly description?: string,
+        public readonly color?: string
     ) {
         super(label, collapsibleState);
         this.tooltip = description || label;
         this.description = description; // Shows on the right in grey
         
         if (iconName) {
-            this.iconPath = new vscode.ThemeIcon(iconName);
+            if (color) {
+                this.iconPath = new vscode.ThemeIcon(iconName, new vscode.ThemeColor(color));
+            } else {
+                this.iconPath = new vscode.ThemeIcon(iconName);
+            }
         } else if (account) {
             this.iconPath = new vscode.ThemeIcon('account');
         }

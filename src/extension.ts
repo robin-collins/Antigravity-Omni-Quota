@@ -83,12 +83,12 @@ export async function activate(context: vscode.ExtensionContext) {
              await accountManager.cleanupInvalidAccounts();
              await runCheck(quotaService, quotaProvider, accountManager, statusBarItem, treeView, context);
              await updateAllAccountsTimes(accountManager, quotaProvider, treeView);
-         }, pollingIntervalMs);
+         }, Math.max(10000, pollingIntervalMs / 2)); // Reduced polling to half for better accuracy, min 10s
          
-         // Fast interval for relative time strings (every 15 seconds)
+         // Fast interval for relative time strings (every 10 seconds)
          const timeUpdateInterval = setInterval(() => {
              updateAllAccountsTimes(accountManager, quotaProvider, treeView);
-         }, 15000);
+         }, 10000);
          context.subscriptions.push({ dispose: () => clearInterval(timeUpdateInterval) });
      }
 
@@ -665,7 +665,7 @@ function updateStatusBar(item: vscode.StatusBarItem, info: any, context: vscode.
         
         // Multi-line rich tooltip
         const remainingStr = getTranslation('remainingText', language);
-        const modelsSummary = info.models.slice(0, 5).map((m: any) => {
+        const modelsSummary = info.models.slice(0, 8).map((m: any) => {
             const mColor = m.percentage >= 50 ? '🟢' : m.percentage >= 30 ? '🟡' : '🔴';
             return `${mColor} ${m.name}: ${m.percentage}%`;
         }).join('\n');
