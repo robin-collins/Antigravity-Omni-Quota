@@ -39,7 +39,8 @@ export const translations = {
         cleanupSuccess: 'Invalid accounts cleaned up successfully',
         allAccountsValid: 'All accounts are valid',
         invalidAccountsFound: 'Found {count} invalid accounts. Run "Clean Up Invalid Accounts" to remove them.',
-        refreshFailed: 'Failed to refresh quota data. Please check Antigravity connection.'
+        refreshFailed: 'Failed to refresh quota data. Please check Antigravity connection.',
+        supportTitle: 'Support development (Buy me a coffee)'
     },
     es: {
         activating: 'Activando...',
@@ -81,7 +82,8 @@ export const translations = {
         cleanupSuccess: 'Cuentas inválidas limpiadas con éxito',
         allAccountsValid: 'Todas las cuentas son válidas',
         invalidAccountsFound: 'Se encontraron {count} cuentas inválidas. Ejecuta "Limpiar Cuentas Inválidas" para eliminarlas.',
-        refreshFailed: 'Error al actualizar los datos de cuota. Por favor, verifica la conexión de Antigravity.'
+        refreshFailed: 'Error al actualizar los datos de cuota. Por favor, verifica la conexión de Antigravity.',
+        supportTitle: 'Apoyar el desarrollo (PayPal)'
     },
     ru: {
         activating: 'Активация...',

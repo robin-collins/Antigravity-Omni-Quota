@@ -2,11 +2,16 @@
   "name": "antigravity-omni-quota",
   "displayName": "Antigravity Omni-Quota",
   "description": "A VS Code extension for managing Omni Quota accounts",
-  "version": "1.0.6",
-  "publisher": "robin-collins",
+  "version": "1.1.1",
+  "publisher": "RicardoGurrola15",
+  "license": "MIT",
   "icon": "icon.png",
   "engines": {
     "vscode": "^1.75.0"
+  },
+  "funding": {
+    "type": "paypal",
+    "url": "https://paypal.me/RicardoGurrola146"
   },
   "categories": [
     "Machine Learning",
@@ -34,8 +39,21 @@
     "onStartupFinished"
   ],
   "main": "./dist/extension.js",
+  "files": [
+    "dist",
+    "media",
+    "icon.png",
+    "package.json",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
   "contributes": {
     "commands": [
+      {
+        "command": "antigravity-quota.support",
+        "title": "Support development"
+      },
       {
         "command": "antigravity-quota.focus",
         "title": "Show Quota Panel"
@@ -192,6 +210,7 @@
     "@types/vscode": "^1.75.0",
     "axios": "^1.13.2",
     "esbuild": "^0.27.2",
+    "ts-node": "^10.9.2",
     "typescript": "^4.9.5"
   }
 }

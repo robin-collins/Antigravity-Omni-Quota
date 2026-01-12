@@ -28,13 +28,41 @@ export class AccountManager {
 
     private cache: Map<string, AccountData> = new Map();
 
-    constructor(private globalState: vscode.Memento) {
+    constructor(
+        private globalState: vscode.Memento,
+        private secrets: vscode.SecretStorage
+    ) {
         this.loadAccounts();
     }
 
     private loadAccounts() {
         const accounts = this.globalState.get<AccountData[]>(AccountManager.STORAGE_KEY, []);
         accounts.forEach(acc => this.cache.set(acc.id, acc));
+    }
+
+    /**
+     * Securely stores a token for an account
+     */
+    public async setAccountSecret(accountId: string, key: string, value: string): Promise<void> {
+        const secretKey = `token_${accountId}_${key}`;
+        await this.secrets.store(secretKey, value);
+    }
+
+    /**
+     * Retrieves a securely stored token
+     */
+    public async getAccountSecret(accountId: string, key: string): Promise<string | undefined> {
+        const secretKey = `token_${accountId}_${key}`;
+        return await this.secrets.get(secretKey);
+    }
+
+    /**
+     * Removes all secrets for an account
+     */
+    public async removeAccountSecrets(accountId: string): Promise<void> {
+        // Typically we'd only have a few keys, like 'csrf' and 'session'
+        await this.secrets.delete(`token_${accountId}_csrf`);
+        await this.secrets.delete(`token_${accountId}_session`);
     }
 
     public getAccounts(): AccountData[] {
@@ -151,6 +179,7 @@ export class AccountManager {
     public async removeAccount(id: string) {
         if (this.cache.has(id)) {
             this.cache.delete(id);
+            await this.removeAccountSecrets(id);
             await this.persist();
         }
     }
