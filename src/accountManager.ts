@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 export interface AccountData {
     id: string;
     displayName: string;
+    email?: string;          // User's email address for display    
     lastActive: number;
     quota: {
         total: number;
@@ -24,7 +25,6 @@ export interface AccountData {
 
 export class AccountManager {
     private static readonly STORAGE_KEY = 'antigravity_accounts';
-    private static readonly MAX_ACCOUNTS = 10;
     private cache: Map<string, AccountData> = new Map();
 
     constructor(
@@ -70,7 +70,10 @@ export class AccountManager {
 
     public async updateAccount(id: string, data: AccountData): Promise<boolean> {
         const isNew = !this.cache.has(id);
-        if (isNew && this.cache.size >= AccountManager.MAX_ACCOUNTS) {
+        const config = vscode.workspace.getConfiguration('antigravity-quota');
+        const maxAccounts = config.get<number>('maxAccounts', 10);
+
+        if (isNew && this.cache.size >= maxAccounts) {
             return false; // Exceeded limit
         }
 
@@ -94,18 +97,19 @@ export class AccountManager {
     }
 
     /**
-     * Validates account data to prevent creation of invalid accounts
+     * Validates account data to prevent creation of invalid/placeholder accounts.
+     * Returns a rejection reason string if invalid, or null if valid.
      */
-    private isValidAccountData(data: AccountData): boolean {
+    private getValidationError(data: AccountData): string | null {
         // Check for invalid display names - MORE STRICT
         const invalidNames = ['undefined', 'account', 'Usuario', '', 'undefined_', 'account_', 'user_', 'guest_', 'test_'];
         const displayNameLower = data.displayName.toLowerCase().trim();
-        
-        // Exact matches
+
+        // Only reject exact placeholder names (not substrings!)
         if (invalidNames.includes(displayNameLower)) {
-            return false;
+            return `exact match in placeholder names: "${displayNameLower}"`;
         }
-        
+
         // Contains invalid patterns
         if (displayNameLower.includes('undefined') ||
             displayNameLower.includes('account') ||
@@ -114,21 +118,22 @@ export class AccountManager {
             displayNameLower.includes('test') ||
             displayNameLower.includes('temp') ||
             displayNameLower.includes('demo')) {
-            return false;
+            return `contains invalid patterns: "${displayNameLower}"`;
         }
 
         // Check for very short names (likely invalid)
         if (data.displayName.trim().length < 3) {
-            return false;
+            return `name too short: "${data.displayName}" (min 3 chars)`;
         }
 
         // Check for valid email pattern in ID (if available)
         if (data.id && data.id.includes('@')) {
             const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailPattern.test(data.id.split('_').pop() || '')) {
-                return false;
+                return `invalid email pattern in ID: "${data.id}"`;
             }
         }
+
 
         // Check for valid models data - MORE STRICT
         if (data.models && data.models.length > 0) {
@@ -140,15 +145,84 @@ export class AccountManager {
                 m.percentage <= 100
             );
             if (validModels.length === 0) {
-                return false;
+                return `no valid models (need name and percentage 0-100)`;
             }
         } else {
             // If no models, it's likely an invalid account
-            return false;
+            return `no models data`;
         }
 
+        return null; // Valid
+    }
+
+    /**
+     * Validates account data to prevent creation of invalid accounts
+     */
+    private isValidAccountData(data: AccountData): boolean {
+        const error = this.getValidationError(data);
+        if (error) {
+            console.log(`[Omni-Quota] Validation failed for "${data.displayName}": ${error}`);
+            return false;
+        }
         return true;
     }
+
+    // /**
+    //  * Validates account data to prevent creation of invalid accounts
+    //  */
+    // private isValidAccountData(data: AccountData): boolean {
+    //     // Check for invalid display names - MORE STRICT
+    //     const invalidNames = ['undefined', 'account', 'Usuario', '', 'undefined_', 'account_', 'user_', 'guest_', 'test_'];
+    //     const displayNameLower = data.displayName.toLowerCase().trim();
+        
+    //     // Exact matches
+    //     if (invalidNames.includes(displayNameLower)) {
+    //         return false;
+    //     }
+        
+    //     // Contains invalid patterns
+    //     if (displayNameLower.includes('undefined') ||
+    //         displayNameLower.includes('account') ||
+    //         displayNameLower.includes('user') ||
+    //         displayNameLower.includes('guest') ||
+    //         displayNameLower.includes('test') ||
+    //         displayNameLower.includes('temp') ||
+    //         displayNameLower.includes('demo')) {
+    //         return false;
+    //     }
+
+    //     // Check for very short names (likely invalid)
+    //     if (data.displayName.trim().length < 3) {
+    //         return false;
+    //     }
+
+    //     // Check for valid email pattern in ID (if available)
+    //     if (data.id && data.id.includes('@')) {
+    //         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    //         if (!emailPattern.test(data.id.split('_').pop() || '')) {
+    //             return false;
+    //         }
+    //     }
+
+    //     // Check for valid models data - MORE STRICT
+    //     if (data.models && data.models.length > 0) {
+    //         // At least one model should have valid data
+    //         const validModels = data.models.filter(m =>
+    //             m.name && m.name.trim().length > 0 &&
+    //             typeof m.percentage === 'number' &&
+    //             m.percentage >= 0 &&
+    //             m.percentage <= 100
+    //         );
+    //         if (validModels.length === 0) {
+    //             return false;
+    //         }
+    //     } else {
+    //         // If no models, it's likely an invalid account
+    //         return false;
+    //     }
+
+    //     return true;
+    // }
 
     /**
      * Cleans up invalid accounts from storage

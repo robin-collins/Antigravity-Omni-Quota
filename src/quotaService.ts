@@ -236,6 +236,16 @@ export class QuotaService {
         return null;
     }
 
+    /**
+     * Invalidates the cached auth token, forcing a fresh read on next request.
+     * Call this when user might have switched accounts.
+     */
+    public invalidateAuthCache(): void {
+        console.log('[Omni-Quota] Auth token cache invalidated');
+        this.cachedAuthToken = null;
+        this.tokenCacheTime = 0;
+    }
+        
     public getInstallationIdFromDisk(): string | null {
         try {
            const home = os.homedir();

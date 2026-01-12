@@ -23,3 +23,6 @@ Thumbs.db
 .vscode/test-results/
 .vscode/settings.json
 .env
+
+reference/
+LSP_API/

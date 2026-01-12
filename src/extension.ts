@@ -296,12 +296,13 @@ async function runCheck(
                 let models: any[] = [];
                 let realName = "Usuario";
                 let userId = 'unknown';
-
+                let userEmail = ''; // Store email for account display
                 if (status && status.userStatus) {
                         realName = status.userStatus.name || realName;
-                        const email = status.userStatus.email || '';
-                        userId = `${conn.initialData?.context?.properties?.installationId || 'unknown'}_${email || realName}`;
-                        
+                        userEmail = status.userStatus.email || '';
+                        userId = `${conn.initialData?.context?.properties?.installationId || 'unknown'}_${userEmail || realName}`;
+                        console.log(`[Omni-Quota] Found account: "${realName}" (Email: ${userEmail || 'N/A'}) on port ${conn.port}`);
+
                         let configData = status.userStatus.cascadeModelConfigData;
                         if (!configData && status.userStatus.planStatus) {
                             configData = status.userStatus.planStatus.cascadeModelConfigData;
@@ -363,20 +364,18 @@ async function runCheck(
                         }
                 }
 
-                const isValidAccount = realName &&
-                    realName !== 'undefined' &&
-                    realName !== 'account' &&
-                    realName.trim().length > 0 &&
-                    realName !== 'Usuario' &&
-                    models && models.length > 0;
-
-                if (!isValidAccount) {
+                // Basic data check - let accountManager handle full validation
+                if (!realName || !models || models.length === 0) {
+                    console.log(`[Omni-Quota] No valid data from API for PID ${conn.pid}: name="${realName}", models=${models?.length || 0}`);
                     continue;
                 }
+
+                console.log(`[Omni-Quota] Updating account in cache: "${realName}" (ID: ${userId})`);
 
                 const success = await accountManager.updateAccount(userId, {
                     id: userId,
                     displayName: realName,
+                    email: userEmail || undefined, // Store email for display in account list
                     lastActive: Date.now(),
                     quota: quota,
                     models: models,
@@ -386,10 +385,17 @@ async function runCheck(
                 
                 if (success) {
                     await accountManager.setAccountSecret(userId, 'csrf', conn.csrfToken);
-                }
-                
-                if (!success) {
-                    vscode.window.showWarningMessage(getTranslation('accountLimitReached', language));
+                    console.log(`[Omni-Quota] Account "${realName}" persisted to globalState.`);
+                } else {
+                    // Determine actual failure reason
+                    const accounts = accountManager.getAccounts();
+                    const maxAccounts = config.get<number>('maxAccounts', 10);
+                    if (accounts.length >= maxAccounts) {
+                        console.log(`[Omni-Quota] Account limit reached (${maxAccounts}), cannot add "${realName}"`);
+                        vscode.window.showWarningMessage(getTranslation('accountLimitReached', language));
+                    } else {
+                        console.log(`[Omni-Quota] Account validation failed for "${realName}" - see validation error above`);
+                    }
                     continue;
                 }
 
@@ -414,7 +420,7 @@ async function runCheck(
     }
 }
 
-async function forceRefresh(
+export async function forceRefresh(
     service: QuotaService,
     provider: QuotaProvider,
     accountManager: AccountManager,
@@ -423,8 +429,20 @@ async function forceRefresh(
     context: vscode.ExtensionContext,
     historyManager: HistoryManager
 ) {
+    console.log('[Omni-Quota] Force refresh initiated');
     lastCheckTime = 0;
-    await runCheck(service, provider, accountManager, statusBar, treeView, context, historyManager);
+    service.invalidateAuthCache(); // Clear stale auth token (helps when user switches accounts)
+
+    try { 
+        await runCheck(service, provider, accountManager, statusBar, treeView, context, historyManager);
+        console.log('[Omni-Quota] Force refresh completed successfully');
+    } catch (error) {
+        console.error('[Omni-Quota] Force refresh failed:', error);
+        // Show error message to user
+        const config = vscode.workspace.getConfiguration('antigravity-quota');
+        const language = config.get('language', 'auto') as string;
+        vscode.window.showErrorMessage(getTranslation('refreshFailed', language));
+    }        
     await updateAllAccountsTimes(accountManager, provider, treeView);
 }
 
